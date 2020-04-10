@@ -1,15 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/relativeLayout"
     android:padding="15dp">
+    <androidx.cardview.widget.CardView
+        android:layout_width="100dp"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="5dp"
+        android:id="@+id/cardView"
+        android:layout_height="60dp">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/videoThumbnail"
+            android:src="@drawable/download">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/videoThumbnail"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:src="@drawable/thumbnail" />
+        </ImageView>
+
+        <TextView
+            android:id="@+id/videoDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#000"
+            android:text="00:00:00"
+            android:textColor="#FFF"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="3dp"
+            android:textSize="12dp"
+            android:layout_gravity="right|bottom"
+
+            ></TextView>
+    </androidx.cardview.widget.CardView>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,19 +44,9 @@
         android:text="VLC-23HFK7X"
         android:textSize="17dp"
         android:textColor="#212121"
-        android:layout_toRightOf="@+id/videoThumbnail"
-        android:paddingLeft="7dp"
-        android:layout_marginLeft="10dp"></TextView>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/videoDescription"
-        android:text="The last video of whatsapp"
-        android:textSize="15dp"
-        android:textColor="#666666"
-        android:layout_below="@+id/videoName"
-        android:paddingLeft="10dp"
-        android:layout_toRightOf="@id/videoThumbnail"
-        android:layout_marginLeft="10dp"></TextView>
+        android:layout_toRightOf="@+id/cardView"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"></TextView>
+
 
 </RelativeLayout>

@@ -5,21 +5,40 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.VideoView;
+
+import java.util.ArrayList;
 
 public class ViewVideo extends AppCompatActivity {
     VideoView videoView;
     private View decorView;
+    ImageView backArrow;
+    TextView videoTitleText;
+    ArrayList<String> videoUri;
+    ArrayList<String> videoTitle;
+    int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_video);
+        videoTitleText=(TextView) findViewById(R.id.videoTitle);
+        backArrow=(ImageView) findViewById(R.id.backArrow);
         videoView=(VideoView) findViewById(R.id.videoView);
-        String videoUri=getIntent().getStringExtra("VideoUri");
-        //setTitle(videoUri);
-        videoView.setVideoURI(Uri.parse(videoUri));
+        videoUri=getIntent().getStringArrayListExtra("VideoUri");
+        videoTitle=getIntent().getStringArrayListExtra("VideoTitle");
+        position=getIntent().getIntExtra("VideoPosition",0);
+        videoTitleText.setText(videoTitle.get(position));
+        videoView.setVideoURI(Uri.parse(videoUri.get(position)));
         videoView.start();
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         //status bar code
         decorView=getWindow().getDecorView();

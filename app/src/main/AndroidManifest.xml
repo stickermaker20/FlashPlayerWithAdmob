@@ -12,16 +12,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents">
-        <activity android:name=".AudioList"></activity>
-        <activity android:name=".ViewVideo" />
-        <activity android:name=".VideoList" />
-        <activity android:name=".MainActivity"
-            android:theme="@style/Theme.MaterialComponents.NoActionBar">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".VideoFolderActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".AudioList" />
+        <activity android:name=".ViewVideo"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.MaterialComponents.NoActionBar"/>
+        <activity android:name=".VideoList" />
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.MaterialComponents.NoActionBar">
+
         </activity>
     </application>
 

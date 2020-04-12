@@ -1,5 +1,6 @@
 package com.example.videoaudioplayer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,13 +24,13 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     ArrayList<String> videosTitle;
     ArrayList<String> videosDuration;
     Bitmap bmThumbnail;
-    Context context;
-    public VideoListAdapter(ArrayList<String> videosUri, ArrayList<String> videosThumb, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Context applicationContext) {
+    Activity activity;
+    public VideoListAdapter(ArrayList<String> videosUri, ArrayList<String> videosThumb, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Activity activity) {
         this.videosUri=videosUri;
         this.videosTitle=videosTitle;
         this.videosThumb=videosThumb;
         this.videosDuration=videosDuration;
-        this.context=applicationContext;
+        this.activity=activity;
 
     }
 
@@ -52,9 +53,9 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context, ViewVideo.class);
+                Intent intent=new Intent(activity, ViewVideo.class);
                 intent.putExtra("VideoUri",videosUri.get(position));
-                context.startActivity(intent);
+                activity.startActivity(intent);
             }
         });
 

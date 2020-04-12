@@ -1,6 +1,7 @@
 package com.example.videoaudioplayer;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -24,13 +25,13 @@ import java.util.ArrayList;
 public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapter.ViewHolder> {
     ArrayList <String> folderName;
     ArrayList <Integer> totalVideo;
-    Context context;
+    Activity activity;
 
 
-    public VideoFoldersAdapter(ArrayList<String> folderName,ArrayList<Integer> totalVideo, Context applicationContext){
+    public VideoFoldersAdapter(ArrayList<String> folderName,ArrayList<Integer> totalVideo, Activity activity){
         this.folderName=folderName;
         this.totalVideo=totalVideo;
-        this.context=applicationContext;
+        this.activity=activity;
     }
     @NonNull
     @Override
@@ -47,9 +48,9 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
             @SuppressLint("ResourceType")
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context,VideoList.class);
+                Intent intent=new Intent(activity,VideoList.class);
                 intent.putExtra("FolderName",folderName.get(position));
-                context.startActivity(intent);
+                activity.startActivity(intent);
                //fragment
 
 //                VideoListFragment videoListFragment=new VideoListFragment();

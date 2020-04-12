@@ -61,6 +61,6 @@ public class VideoList extends AppCompatActivity {
             videosDuration.add(cursor.getString(duration));
 
         }
-        recyclerView.setAdapter(new VideoListAdapter(videosUri,videosThumb,videosTitle,videosDuration,getApplicationContext()));
+        recyclerView.setAdapter(new VideoListAdapter(videosUri,videosThumb,videosTitle,videosDuration,VideoList.this));
     }
 }

@@ -2,142 +2,201 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
-    android:background="#000"
     android:layout_height="match_parent"
+    android:background="#000"
     tools:context=".ViewVideo">
+
     <VideoView
+        android:id="@+id/videoView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_gravity="center"
-        android:backgroundTint="#000"
         android:layout_centerInParent="true"
-        android:id="@+id/videoView"></VideoView>
+        android:layout_gravity="center"
+        android:backgroundTint="#000"></VideoView>
+
     <FrameLayout
+        android:id="@+id/topFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:id="@+id/topFrameLayout">
+        android:layout_alignParentTop="true">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:background="#000"
-            android:alpha="0.5"
             android:layout_height="match_parent"
+            android:alpha="0.5"
+            android:background="#000"
+            android:orientation="horizontal"
             android:padding="7dp"></LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="horizontal"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:padding="7dp">
 
             <ImageView
+                android:id="@+id/backArrow"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:id="@+id/backArrow"
                 android:layout_marginLeft="20dp"
                 android:background="?android:selectableItemBackground"
                 android:src="@drawable/ic_arrow_back_black_24dp"></ImageView>
+
             <TextView
+                android:id="@+id/videoTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:textColor="#FFF"
-                android:textSize="15dp"
                 android:layout_marginTop="2dp"
                 android:text="PUBG MOBILE 122121"
-                android:id="@+id/videoTitle"></TextView>
+                android:textColor="#FFF"
+                android:textSize="15dp"></TextView>
         </LinearLayout>
     </FrameLayout>
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_alignParentBottom="true"
-    android:id="@+id/bottomFrameLayout"
-    android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:background="#000"
-        android:alpha="0.5"
-        android:layout_height="match_parent"></LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        android:background="#696969">
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="00:00"
-    android:textColor="#FFF"
-    android:textSize="15dp"
 
-    android:layout_alignParentLeft="true"
-    android:id="@+id/startTime"></TextView>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00:00"
-            android:textColor="#FFF"
-            android:textSize="15dp"
-            android:layout_alignParentRight="true"
-            android:id="@+id/endTime"></TextView>
-    </RelativeLayout>
-    <LinearLayout
+    <ImageView
+        android:id="@+id/rotateScreen"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/topFrameLayout"
+        android:background="?android:selectableItemBackground"
+        android:src="@drawable/ic_screen_rotation_black_24dp"></ImageView>
+
+
+    <FrameLayout
+        android:id="@+id/bottomFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:background="#696969">
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/screenLock"
-            android:src="@drawable/ic_lock_black_24dp"></ImageView>
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/previous"
-            android:src="@drawable/ic_skip_previous_black_24dp"></ImageView>
-        <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:id="@+id/play"
-          android:src="@drawable/ic_play_arrow_black_24dp"></ImageView>
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/pause"
-            android:src="@drawable/ic_pause_black_24dp"></ImageView>
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/next"
-            android:src="@drawable/ic_skip_next_black_24dp"></ImageView>
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/fullScreen"
-            android:src="@drawable/ic_zoom_out_map_black_24dp"></ImageView>
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/cropScreen"
-            android:src="@drawable/ic_crop_black_24dp"></ImageView>
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/smallScreen"
-            android:src="@drawable/ic_fullscreen_black_24dp"></ImageView>
-    </LinearLayout>
-    </LinearLayout>
-</FrameLayout>
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.5"
+            android:background="#000"
+            android:orientation="horizontal"></LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/startTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="00:00"
+
+                    android:textColor="#FFF"
+                    android:textSize="15dp"></TextView>
+
+                <TextView
+                    android:id="@+id/endTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="00:00"
+                    android:textColor="#FFF"
+                    android:textSize="15dp"></TextView>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/screenLock"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="40dp"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/ic_lock_black_24dp"></ImageView>
+
+                <ImageView
+                    android:id="@+id/previous"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:background="?android:selectableItemBackground"
+
+                    android:src="@drawable/ic_skip_previous_black_24dp"></ImageView>
+
+                <ImageView
+                    android:id="@+id/play"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/ic_play_arrow_black_24dp"></ImageView>
+
+                <ImageView
+                    android:id="@+id/pause"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/ic_pause_black_24dp"></ImageView>
+
+                <ImageView
+                    android:id="@+id/next"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/ic_skip_next_black_24dp"></ImageView>
+
+                <ImageView
+                    android:id="@+id/fullScreen"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="40dp"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/ic_zoom_out_map_black_24dp"></ImageView>
+
+                <ImageView
+                    android:id="@+id/cropScreen"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="40dp"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/ic_crop_black_24dp"></ImageView>
+
+                <ImageView
+                    android:id="@+id/smallScreen"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:background="?android:selectableItemBackground"
+                    android:src="@drawable/ic_fullscreen_black_24dp"></ImageView>
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
 
 
 </RelativeLayout>

@@ -8,6 +8,7 @@
     android:background="#000"
     tools:context=".ViewVideo">
 
+
     <VideoView
         android:id="@+id/videoView"
         android:layout_width="fill_parent"
@@ -15,12 +16,20 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:backgroundTint="#000"></VideoView>
-
+    <TextView
+        android:id="@+id/screenSizeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text=""
+        android:textStyle="bold"
+        android:textColor="#FFF"
+        android:textSize="40dp"></TextView>
     <FrameLayout
         android:id="@+id/topFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
+            android:layout_alignParentTop="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,11 +39,11 @@
             android:orientation="horizontal"
             android:padding="7dp"></LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="7dp">
+            android:padding="15dp">
 
             <ImageView
                 android:id="@+id/backArrow"
@@ -50,21 +59,40 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="2dp"
+                android:layout_toRightOf="@+id/backArrow"
                 android:text="PUBG MOBILE 122121"
                 android:textColor="#FFF"
                 android:textSize="15dp"></TextView>
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/popupScreen"
+                android:layout_width="25dp"
+                android:layout_alignParentRight="true"
+                android:layout_height="25dp"
+                android:layout_marginRight="30dp"
+                android:background="?android:selectableItemBackground"
+                android:src="@drawable/ic_aspect_ratio_black_24dp"></ImageView>
+
+
+        </RelativeLayout>
     </FrameLayout>
 
     <ImageView
         android:id="@+id/rotateScreen"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="20dp"
         android:layout_below="@id/topFrameLayout"
         android:background="?android:selectableItemBackground"
         android:src="@drawable/ic_screen_rotation_black_24dp"></ImageView>
+    <ImageView
+        android:id="@+id/screenUnlock"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="20dp"
+        android:background="?android:selectableItemBackground"
+        android:src="@drawable/ic_lock_black_24dp"></ImageView>
 
 
     <FrameLayout
@@ -100,7 +128,22 @@
 
                     android:textColor="#FFF"
                     android:textSize="15dp"></TextView>
-
+                <SeekBar
+                    android:id="@+id/video_seekbar"
+                    android:background="@android:color/transparent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="10.0dip"
+                    android:layout_marginLeft="5.0dip"
+                    android:layout_marginTop="5.0dip"
+                    android:layout_marginRight="5.0dip"
+                    android:layout_marginBottom="5.0dip"
+                    android:progressDrawable="@drawable/progress"
+                    android:thumb="@drawable/thumb"
+                    android:layout_span="2"
+                    android:layout_toLeftOf="@+id/endTime"
+                    android:layout_toRightOf="@+id/startTime"
+                    android:layout_centerVertical="true"
+                    android:thumbTintMode="multiply" />
                 <TextView
                     android:id="@+id/endTime"
                     android:layout_width="wrap_content"

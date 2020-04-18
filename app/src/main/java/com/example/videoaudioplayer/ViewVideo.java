@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.PictureInPictureParams;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,24 +15,28 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Rational;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.swipper.library.Swipper;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
 public class ViewVideo extends AppCompatActivity{
-    private final PictureInPictureParams.Builder pictureInPictureParamsBuilder =
-            new PictureInPictureParams.Builder();
+
+
     VideoView videoView;
     private View decorView;
     ImageView backArrow,screenLock,previous,next,play,pause,fullScreen,smallScreen,cropScreen,rotateScreen,screenUnlock,popupScreen;
@@ -47,9 +53,12 @@ public class ViewVideo extends AppCompatActivity{
     private Handler updateHandler = new Handler();
     int dur = 0;
     int current = 0;
-    String videoCurrentTime,videoLeftTime;
+    String videoCurrentTime,videoTotalTime;
     int videoPauseTime;
     boolean videoPlayed;
+    private GestureDetector mDetector;
+    AudioManager audioManager;
+    int volumeUp,volumeDown;
 
     private Runnable updateVideoTime = new Runnable() {
         @Override
@@ -69,12 +78,17 @@ public class ViewVideo extends AppCompatActivity{
             int leftmns = (dur % 3600000) / 60000;
             int leftscs = ((dur % 3600000) % 60000) / 1000;
             if (dur / 3600000 > 0) {
-                videoLeftTime = String.format("%02d:%02d:%02d", new Object[]{Integer.valueOf(dur / 3600000), Integer.valueOf(leftmns), Integer.valueOf(leftscs)});
+                videoTotalTime = String.format("%02d:%02d:%02d", new Object[]{Integer.valueOf(dur / 3600000), Integer.valueOf(leftmns), Integer.valueOf(leftscs)});
             } else {
-                videoLeftTime = String.format("%02d:%02d", new Object[]{Integer.valueOf(leftmns), Integer.valueOf(leftscs)});
+                videoTotalTime = String.format("%02d:%02d", new Object[]{Integer.valueOf(leftmns), Integer.valueOf(leftscs)});
             }
             currentTime.setText(videoCurrentTime);
-            leftTime.setText(videoLeftTime);
+            leftTime.setText(videoTotalTime);
+            if(videoCurrentTime.equals(videoTotalTime)){
+                play.setVisibility(View.VISIBLE);
+                pause.setVisibility(View.GONE);
+
+            }
         }
     };
 
@@ -138,9 +152,9 @@ public class ViewVideo extends AppCompatActivity{
         smallScreen.setVisibility(View.GONE);
         rotateScreen.setVisibility(View.GONE);
         screenUnlock.setVisibility(View.GONE);
-
+        audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         seekbar = (SeekBar) findViewById(R.id.video_seekbar);
-
+        mDetector = new GestureDetector(this, new MyGestureListener());
         //time and seekbar code starts here
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -231,6 +245,11 @@ public class ViewVideo extends AppCompatActivity{
                 }
                 videoTitleText.setText(videoTitle.get(position));
                 videoView.setVideoURI(Uri.parse(videoUri.get(position)));
+                if(!videoView.isPlaying()){
+                    videoView.start();
+                    pause.setVisibility(View.VISIBLE);
+                    play.setVisibility(View.GONE);
+                }
 
             }
         });
@@ -243,6 +262,11 @@ public class ViewVideo extends AppCompatActivity{
                 }
                 videoTitleText.setText(videoTitle.get(position));
                 videoView.setVideoURI(Uri.parse(videoUri.get(position)));
+                if(!videoView.isPlaying()){
+                    videoView.start();
+                    pause.setVisibility(View.VISIBLE);
+                    play.setVisibility(View.GONE);
+                }
 
             }
         });
@@ -398,9 +422,16 @@ public class ViewVideo extends AppCompatActivity{
         popupScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Rational aspectRatio = new Rational(videoView.getWidth(), videoView.getHeight());
-                pictureInPictureParamsBuilder.setAspectRatio(aspectRatio).build();
-                enterPictureInPictureMode(pictureInPictureParamsBuilder.build());
+                final PictureInPictureParams.Builder pictureInPictureParamsBuilder;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    pictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
+                    Rational aspectRatio = new Rational(videoView.getWidth(), videoView.getHeight());
+                    pictureInPictureParamsBuilder.setAspectRatio(aspectRatio).build();
+                    enterPictureInPictureMode(pictureInPictureParamsBuilder.build());
+                }else{
+                    Toast.makeText(getApplicationContext(),"Your phone not support this feature",Toast.LENGTH_LONG).show();
+                }
+
             }
         });
         backArrow.setOnClickListener(new View.OnClickListener() {
@@ -409,12 +440,7 @@ public class ViewVideo extends AppCompatActivity{
                 finish();
             }
         });
-        //videoView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
+
 
         //status bar code
         decorView=getWindow().getDecorView();
@@ -424,6 +450,82 @@ public class ViewVideo extends AppCompatActivity{
                 decorView.setSystemUiVisibility(hideSystemBars());
             }
         });
+
+        // volume + brightness + seekbar gesture code
+        videoView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mDetector.onTouchEvent(event);
+
+            }
+        });
+
+    }
+
+    class MyGestureListener extends GestureDetector.SimpleOnGestureListener{
+        @Override
+        public boolean onDown(MotionEvent event) {
+//            Toast.makeText(getApplicationContext(),"onDown",Toast.LENGTH_SHORT).show();
+
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+//            Toast.makeText(getApplicationContext(),"onsingle",Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+//            Toast.makeText(getApplicationContext(),"onLong",Toast.LENGTH_SHORT).show();
+
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            Toast.makeText(getApplicationContext(),"ondouble",Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2,
+                                float distanceX, float distanceY) {
+            if (e1.getY() < e2.getY() ){
+                Toast.makeText(getApplicationContext(),"volume down "+distanceX,Toast.LENGTH_SHORT).show();
+
+//                volumeUp = 0;
+//                volumeDown += 1;
+//                if(volumeDown > 7) {
+//                    Log.i("Increased", "Vol decrease");
+//                    audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+//                    volumeDown = 0;
+//                }
+            }
+            else if(e1.getY() > e2.getY()) {
+                Toast.makeText(getApplicationContext(),"volume up "+distanceY,Toast.LENGTH_SHORT).show();
+
+//                volumeDown = 0;
+//                volumeUp += 1;
+//                if(volumeUp > 7){
+//                    Log.i("Increased", "Vol increase");
+//                    audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+//                    volumeUp = 0;
+//                }
+
+            }
+            return true;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent event1, MotionEvent event2,
+                               float velocityX, float velocityY) {
+//            Toast.makeText(getApplicationContext(),"onfling",Toast.LENGTH_SHORT).show();
+
+            return true;
+        }
     }
 
 

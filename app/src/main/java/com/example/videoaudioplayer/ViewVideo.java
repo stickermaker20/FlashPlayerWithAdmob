@@ -2,6 +2,7 @@ package com.example.videoaudioplayer;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MotionEventCompat;
 
 import android.annotation.SuppressLint;
 import android.app.PictureInPictureParams;
@@ -14,12 +15,14 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Rational;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -27,6 +30,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import com.google.android.gms.cast.TextTrackStyle;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.swipper.library.Swipper;
 
@@ -40,7 +45,7 @@ public class ViewVideo extends AppCompatActivity{
     VideoView videoView;
     private View decorView;
     ImageView backArrow,screenLock,previous,next,play,pause,fullScreen,smallScreen,cropScreen,rotateScreen,screenUnlock,popupScreen;
-    TextView videoTitleText,currentTime,leftTime,screenSizeText;
+    TextView videoTitleText,currentTime,leftTime,screenSizeText,textVolume,textBrightness;
     ArrayList<String> videoUri;
     ArrayList<String> videoTitle;
     int position;
@@ -49,7 +54,7 @@ public class ViewVideo extends AppCompatActivity{
     boolean framesVisibility=false;
     boolean screenLandscape=true;
     boolean lockScreen=false;
-    SeekBar seekbar;
+    SeekBar seekbar,brightbar,volumebar;
     private Handler updateHandler = new Handler();
     int dur = 0;
     int current = 0;
@@ -58,13 +63,19 @@ public class ViewVideo extends AppCompatActivity{
     boolean videoPlayed;
     private GestureDetector mDetector;
     AudioManager audioManager;
-    int volumeUp,volumeDown;
-
+    long currentPosition;
+    //scroll intances
+    private int mMaxVolume;
+    Long lastSeekUpdateTime = null;
+    Long lastVolumeUpdateTime = null;
+    private float mCurBrightness = -1.0f;
+    private int mCurVolume = -1;
+    private int brightness;
     private Runnable updateVideoTime = new Runnable() {
         @Override
         public void run() {
             dur = videoView.getDuration();
-            long currentPosition = videoView.getCurrentPosition();
+            currentPosition = videoView.getCurrentPosition();
             seekbar.setProgress((int) currentPosition);
             updateHandler.postDelayed(this, 100);
             current = videoView.getCurrentPosition();
@@ -128,6 +139,10 @@ public class ViewVideo extends AppCompatActivity{
         next=(ImageView) findViewById(R.id.next);
         play=(ImageView)findViewById(R.id.play);
         pause=(ImageView)findViewById(R.id.pause);
+        textBrightness=(TextView) findViewById(R.id.textbrightness);
+        textVolume=(TextView) findViewById(R.id.textvolume);
+        brightbar=(SeekBar) findViewById(R.id.brightness_seekbar);
+        volumebar=(SeekBar) findViewById(R.id.volume_seekbar);
         popupScreen=(ImageView)findViewById(R.id.popupScreen);
         screenSizeText=(TextView) findViewById(R.id.screenSizeText);
         currentTime=(TextView) findViewById(R.id.startTime);
@@ -155,6 +170,34 @@ public class ViewVideo extends AppCompatActivity{
         audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         seekbar = (SeekBar) findViewById(R.id.video_seekbar);
         mDetector = new GestureDetector(this, new MyGestureListener());
+        lastSeekUpdateTime=Long.valueOf(System.currentTimeMillis());
+        lastVolumeUpdateTime=Long.valueOf(System.currentTimeMillis());
+        this.brightbar.setMax(100);
+        this.volumebar.setMax(this.audioManager.getStreamMaxVolume(3));
+        this.volumebar.setProgress(this.audioManager.getStreamVolume(3));
+        this.volumebar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                ViewVideo.this.audioManager.setStreamVolume(3, progress, 0);
+                if (progress > 0) {
+                    progress = (progress * 100) / ViewVideo.this.mMaxVolume;
+                }
+                ViewVideo.this.textVolume.setText(String.valueOf(progress));
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        this.volumebar.setKeyProgressIncrement(1);
+        this.brightbar.setKeyProgressIncrement(1);
+        try {
+            this.brightness = Settings.System.getInt(getContentResolver(), "screen_brightness");
+        } catch (Settings.SettingNotFoundException e) {
+            Log.e("Error", "Cannot access system brightness");
+            e.printStackTrace();
+        }
         //time and seekbar code starts here
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -187,11 +230,6 @@ public class ViewVideo extends AppCompatActivity{
 
             }
         });
-
-        //new MyAsync().execute();
-
-//        currentTime.setText(videoView.getCurrentPosition());
-  //      leftTime.setText(videoView.getDuration());
 
 
         //my code
@@ -455,6 +493,12 @@ public class ViewVideo extends AppCompatActivity{
         videoView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case 1:
+                        mCurVolume = -1;
+                        mCurBrightness = -1.0f;
+                        break;
+                }
                 return mDetector.onTouchEvent(event);
 
             }
@@ -493,41 +537,143 @@ public class ViewVideo extends AppCompatActivity{
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                 float distanceX, float distanceY) {
-            if (e1.getY() < e2.getY() ){
-                Toast.makeText(getApplicationContext(),"volume down "+distanceX,Toast.LENGTH_SHORT).show();
-
-//                volumeUp = 0;
-//                volumeDown += 1;
-//                if(volumeDown > 7) {
-//                    Log.i("Increased", "Vol decrease");
-//                    audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
-//                    volumeDown = 0;
-//                }
-            }
-            else if(e1.getY() > e2.getY()) {
-                Toast.makeText(getApplicationContext(),"volume up "+distanceY,Toast.LENGTH_SHORT).show();
-
-//                volumeDown = 0;
-//                volumeUp += 1;
-//                if(volumeUp > 7){
-//                    Log.i("Increased", "Vol increase");
-//                    audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-//                    volumeUp = 0;
-//                }
-
+            float deltaX = e1.getRawX() - e2.getRawX();
+            float deltaY = e1.getRawY() - e2.getRawY();
+            Long currentTime = Long.valueOf(System.currentTimeMillis());
+            ViewVideo.this.setGestureListener();
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (Math.abs(deltaX) > 20.0f && currentTime.longValue() >= ViewVideo.this.lastVolumeUpdateTime.longValue() + 1000) {
+                    boolean z;
+                    ViewVideo.this.lastSeekUpdateTime = currentTime;
+                    ViewVideo viewVideo = ViewVideo.this;
+                    if (deltaX < 0.0f) {
+                        z = true;
+                    } else {
+                        z = false;
+                    }
+                    viewVideo.onHorizontalScroll(z);
+                }
+            } else if (Math.abs(deltaY) > BitmapDescriptorFactory.HUE_YELLOW && currentTime.longValue() >= ViewVideo.this.lastSeekUpdateTime.longValue() + 1000) {
+                if (((double) e1.getX()) < ((double) ViewVideo.getDeviceWidth(getApplicationContext())) * 0.5d) {
+                    ViewVideo.this.lastVolumeUpdateTime = currentTime;
+                    ViewVideo.this.onVerticalScroll(deltaY / ((float) ViewVideo.getDeviceHeight(getApplicationContext())), 1);
+                } else if (((double) e1.getX()) > ((double) ViewVideo.getDeviceWidth(getApplicationContext())) * 0.5d) {
+                    ViewVideo.this.lastVolumeUpdateTime = currentTime;
+                    ViewVideo.this.onVerticalScroll(deltaY / ((float) ViewVideo.getDeviceHeight(getApplicationContext())), 2);
+                }
             }
             return true;
         }
 
-        @Override
-        public boolean onFling(MotionEvent event1, MotionEvent event2,
-                               float velocityX, float velocityY) {
-//            Toast.makeText(getApplicationContext(),"onfling",Toast.LENGTH_SHORT).show();
-
-            return true;
+    }
+    public void setGestureListener() {
+        this.mMaxVolume = this.audioManager.getStreamMaxVolume(3);
+    }
+    public static int getDeviceWidth(Context context) {
+        @SuppressLint("WrongConstant") WindowManager wm = (WindowManager) context.getSystemService("window");
+        DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(mDisplayMetrics);
+        return mDisplayMetrics.widthPixels;
+    }
+    public static int getDeviceHeight(Context context) {
+        @SuppressLint("WrongConstant") WindowManager wm = (WindowManager) context.getSystemService("window");
+        DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(mDisplayMetrics);
+        return mDisplayMetrics.heightPixels;
+    }
+    public void onVerticalScroll(float percent, int direction) {
+        if (direction == 1) {
+            changeBrightness(percent * 2.0f);
+        } else {
+            changeVolume(percent * 2.0f);
         }
     }
 
+    @SuppressLint("WrongConstant")
+    public void onHorizontalScroll(boolean seekForward) {
+        if (((seekForward && this.videoView.canSeekForward()) || (!seekForward && this.videoView.canSeekBackward())) ) {
+//            if (this.bottomFrameLayout.getVisibility() == 8) {
+//                this.bottomFrameLayout.setVisibility(0);
+//            }
+            this.audioManager.setStreamMute(3, true);
+          //  this.videoView.removeCallbacks(this.horizontalScrollRunnable);
+//            if (this.scroll_position.getVisibility() == 8) {
+//                this.scroll_position.setVisibility(0);
+//            }
+          //  this.videoView.postDelayed(this.horizontalScrollRunnable, 1000);
+            if (seekForward) {
+                Log.i("ViewGestureListener", "Forwarding");
+                this.currentPosition = this.videoView.getCurrentPosition();
+                this.currentPosition = this.videoView.getCurrentPosition() + 700;
+                this.videoView.seekTo((int) currentPosition);
+                return;
+            }
+            Log.i("ViewGestureListener", "Rewinding");
+            this.currentPosition = this.videoView.getCurrentPosition();
+            this.currentPosition = this.videoView.getCurrentPosition() - 700;
+            this.videoView.seekTo((int) currentPosition);
+        }
+    }
+//    class C13732 implements Runnable {
+//        C13732() {
+//        }
+//
+//        @SuppressLint("WrongConstant")
+//        public void run() {
+//            if (Long.valueOf(System.currentTimeMillis()).longValue() >= ViewVideo.this.lastSeekUpdateTime.longValue() + 1000) {
+//                Log.e("Scroll", "Stopped");
+//                ViewVideo.this.audioManager.setStreamMute(3, false);
+//                ViewVideo.this.bottomFrameLayout.setVisibility(8);
+//                if (ViewVideo.this.videoView.isPlaying()) {
+//                    ViewVideo.this.bottomFrameLayout.setVisibility(8);
+//                }
+//                ViewVideo.this.videoView.removeCallbacks(ViewVideo.this.horizontalScrollRunnable);
+//                return;
+//            }
+//            ViewVideo.this.videoView.postDelayed(ViewVideo.this.horizontalScrollRunnable, 1000);
+//        }
+//    }
+    @SuppressLint("WrongConstant")
+    private void changeBrightness(float percent) {
+        if (this.mCurBrightness == -1.0f) {
+            this.mCurBrightness = this.getWindow().getAttributes().screenBrightness;
+            if (this.mCurBrightness <= 0.01f) {
+                this.mCurBrightness = 0.01f;
+            }
+        }
+        this.textBrightness.setVisibility(0);
+        WindowManager.LayoutParams attributes = this.getWindow().getAttributes();
+        attributes.screenBrightness = this.mCurBrightness + percent;
+        if (attributes.screenBrightness >= TextTrackStyle.DEFAULT_FONT_SCALE) {
+            attributes.screenBrightness = TextTrackStyle.DEFAULT_FONT_SCALE;
+        } else if (attributes.screenBrightness <= 0.01f) {
+            attributes.screenBrightness = 0.01f;
+        }
+        this.getWindow().setAttributes(attributes);
+        float p = attributes.screenBrightness * 100.0f;
+        this.brightbar.setProgress((int) p);
+        this.textBrightness.setText(String.valueOf((int) p));
+    }
+
+    @SuppressLint("WrongConstant")
+    private void changeVolume(float percent) {
+        this.volumebar.setVisibility(0);
+        this.textVolume.setVisibility(0);
+        if (this.mCurVolume == -1) {
+            this.mCurVolume = this.audioManager.getStreamVolume(3);
+            if (((float) this.mCurVolume) < 0.01f) {
+                this.mCurVolume = 0;
+            }
+        }
+        int volume = ((int) (((float) this.mMaxVolume) * percent)) + this.mCurVolume;
+        if (volume > this.mMaxVolume) {
+            volume = this.mMaxVolume;
+        }
+        if (((float) volume) < 0.01f) {
+            volume = 0;
+        }
+        this.volumebar.setProgress(volume);
+    }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {

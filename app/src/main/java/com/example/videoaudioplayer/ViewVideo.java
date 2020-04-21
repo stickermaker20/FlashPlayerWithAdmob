@@ -105,6 +105,7 @@ public class ViewVideo extends AppCompatActivity{
             if(videoCurrentTime.equals(videoTotalTime)){
                 play.setVisibility(View.VISIBLE);
                 pause.setVisibility(View.GONE);
+                videoView.pause();
 
             }
         }

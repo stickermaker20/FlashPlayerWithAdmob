@@ -45,7 +45,7 @@ public class ViewVideo extends AppCompatActivity{
     VideoView videoView;
     private View decorView;
     ImageView backArrow,screenLock,previous,next,play,pause,fullScreen,smallScreen,cropScreen,rotateScreen,screenUnlock,popupScreen;
-    TextView videoTitleText,currentTime,leftTime,screenSizeText,textVolume,textBrightness;
+    TextView videoTitleText,currentTime,leftTime,screenSizeText,textVolume,textBrightness,textSeekbar,textPlayPause;
     ArrayList<String> videoUri;
     ArrayList<String> videoTitle;
     int position;
@@ -94,6 +94,13 @@ public class ViewVideo extends AppCompatActivity{
                 videoTotalTime = String.format("%02d:%02d", new Object[]{Integer.valueOf(leftmns), Integer.valueOf(leftscs)});
             }
             currentTime.setText(videoCurrentTime);
+            textSeekbar.setText(videoCurrentTime);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    textSeekbar.setVisibility(View.GONE);
+                }
+            }, 1500);
             leftTime.setText(videoTotalTime);
             if(videoCurrentTime.equals(videoTotalTime)){
                 play.setVisibility(View.VISIBLE);
@@ -138,6 +145,8 @@ public class ViewVideo extends AppCompatActivity{
         previous=(ImageView) findViewById(R.id.previous);
         next=(ImageView) findViewById(R.id.next);
         play=(ImageView)findViewById(R.id.play);
+        textSeekbar=(TextView) findViewById(R.id.textseekbar);
+        textPlayPause=(TextView) findViewById(R.id.textplay);
         pause=(ImageView)findViewById(R.id.pause);
         textBrightness=(TextView) findViewById(R.id.textbrightness);
         textVolume=(TextView) findViewById(R.id.textvolume);
@@ -167,6 +176,11 @@ public class ViewVideo extends AppCompatActivity{
         smallScreen.setVisibility(View.GONE);
         rotateScreen.setVisibility(View.GONE);
         screenUnlock.setVisibility(View.GONE);
+        brightbar.setVisibility(View.GONE);
+        volumebar.setVisibility(View.GONE);
+        textSeekbar.setVisibility(View.GONE);
+        textVolume.setVisibility(View.GONE);
+        textBrightness.setVisibility(View.GONE);
         audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         seekbar = (SeekBar) findViewById(R.id.video_seekbar);
         mDetector = new GestureDetector(this, new MyGestureListener());
@@ -233,45 +247,16 @@ public class ViewVideo extends AppCompatActivity{
 
 
         //my code
-        mainLayout.setOnClickListener(new View.OnClickListener() {
+        topFrameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!lockScreen){
-                if(framesVisibility){
-                    topFrameLayout.setVisibility(View.GONE);
-                    bottomFrameLayout.setVisibility(View.GONE);
-                    rotateScreen.setVisibility(View.GONE);
-                    framesVisibility=false;
 
-                }else{
-                    topFrameLayout.setVisibility(View.VISIBLE);
-                    bottomFrameLayout.setVisibility(View.VISIBLE);
-                    rotateScreen.setVisibility(View.VISIBLE);
-                    if(videoView.isPlaying()){
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(!framesVisibility) {
-                                    topFrameLayout.setVisibility(View.GONE);
-                                    bottomFrameLayout.setVisibility(View.GONE);
-                                    rotateScreen.setVisibility(View.GONE);
-                                    framesVisibility=false;
-                                }
-                            }
-                        }, 4000);
-                    }else{
-                        framesVisibility=true;
-                    }
-                }
-            }else{
-                screenUnlock.setVisibility(View.VISIBLE);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            screenUnlock.setVisibility(View.GONE);
-                        }
-                    }, 4000);
-                }
+            }
+        });
+        bottomFrameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
         previous.setOnClickListener(new View.OnClickListener() {
@@ -338,7 +323,7 @@ public class ViewVideo extends AppCompatActivity{
                             rotateScreen.setVisibility(View.GONE);
                             framesVisibility=false;
                         }
-                    }, 4000);
+                    }, 1000);
                 }
             }
         });
@@ -461,7 +446,7 @@ public class ViewVideo extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 final PictureInPictureParams.Builder pictureInPictureParamsBuilder;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                     pictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
                     Rational aspectRatio = new Rational(videoView.getWidth(), videoView.getHeight());
                     pictureInPictureParamsBuilder.setAspectRatio(aspectRatio).build();
@@ -490,13 +475,23 @@ public class ViewVideo extends AppCompatActivity{
         });
 
         // volume + brightness + seekbar gesture code
-        videoView.setOnTouchListener(new View.OnTouchListener() {
+        mainLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case 1:
                         mCurVolume = -1;
                         mCurBrightness = -1.0f;
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                volumebar.setVisibility(View.GONE);
+                                textVolume.setVisibility(View.GONE);
+                                brightbar.setVisibility(View.GONE);
+                                textBrightness.setVisibility(View.GONE);
+                            }
+                        }, 500);
+
                         break;
                 }
                 return mDetector.onTouchEvent(event);
@@ -516,21 +511,90 @@ public class ViewVideo extends AppCompatActivity{
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-//            Toast.makeText(getApplicationContext(),"onsingle",Toast.LENGTH_SHORT).show();
+            if(!lockScreen){
+                if(framesVisibility){
+                    topFrameLayout.setVisibility(View.GONE);
+                    bottomFrameLayout.setVisibility(View.GONE);
+                    rotateScreen.setVisibility(View.GONE);
+                    framesVisibility=false;
+
+                }else{
+                    topFrameLayout.setVisibility(View.VISIBLE);
+                    bottomFrameLayout.setVisibility(View.VISIBLE);
+                    rotateScreen.setVisibility(View.VISIBLE);
+                    if(videoView.isPlaying()){
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(!framesVisibility) {
+                                    topFrameLayout.setVisibility(View.GONE);
+                                    bottomFrameLayout.setVisibility(View.GONE);
+                                    rotateScreen.setVisibility(View.GONE);
+                                    framesVisibility=false;
+                                }
+                            }
+                        }, 4000);
+                    }else{
+                        framesVisibility=true;
+                    }
+                }
+            }else{
+                screenUnlock.setVisibility(View.VISIBLE);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            screenUnlock.setVisibility(View.GONE);
+                        }
+                    }, 4000);
+                }
             return true;
         }
 
 
 
-        @Override
-        public void onLongPress(MotionEvent e) {
-//            Toast.makeText(getApplicationContext(),"onLong",Toast.LENGTH_SHORT).show();
 
-        }
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            Toast.makeText(getApplicationContext(),"ondouble",Toast.LENGTH_SHORT).show();
+            if(videoView.isPlaying()){
+                videoView.pause();
+                pause.setVisibility(View.GONE);
+                play.setVisibility(View.VISIBLE);
+                topFrameLayout.setVisibility(View.VISIBLE);
+                bottomFrameLayout.setVisibility(View.VISIBLE);
+                rotateScreen.setVisibility(View.VISIBLE);
+                framesVisibility=true;
+                textPlayPause.setText("PAUSE");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                   textPlayPause.setText("");
+                    }
+                }, 1000);
+            }else{
+                videoView.start();
+                play.setVisibility(View.GONE);
+                pause.setVisibility(View.VISIBLE);
+                textPlayPause.setText("PLAY");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        textPlayPause.setText("");
+                    }
+                }, 1000);
+                if(videoView.isPlaying()){
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            topFrameLayout.setVisibility(View.GONE);
+                            bottomFrameLayout.setVisibility(View.GONE);
+                            rotateScreen.setVisibility(View.GONE);
+                            framesVisibility=false;
+                        }
+                    }, 1000);
+                }
+            }
+
             return true;
         }
 
@@ -591,6 +655,7 @@ public class ViewVideo extends AppCompatActivity{
 
     @SuppressLint("WrongConstant")
     public void onHorizontalScroll(boolean seekForward) {
+        textSeekbar.setVisibility(View.VISIBLE);
         if (((seekForward && this.videoView.canSeekForward()) || (!seekForward && this.videoView.canSeekBackward())) ) {
 //            if (this.bottomFrameLayout.getVisibility() == 8) {
 //                this.bottomFrameLayout.setVisibility(0);
@@ -612,6 +677,7 @@ public class ViewVideo extends AppCompatActivity{
             this.currentPosition = this.videoView.getCurrentPosition();
             this.currentPosition = this.videoView.getCurrentPosition() - 700;
             this.videoView.seekTo((int) currentPosition);
+
         }
     }
 //    class C13732 implements Runnable {
@@ -635,6 +701,8 @@ public class ViewVideo extends AppCompatActivity{
 //    }
     @SuppressLint("WrongConstant")
     private void changeBrightness(float percent) {
+        brightbar.setVisibility(View.VISIBLE);
+        textBrightness.setVisibility(View.VISIBLE);
         if (this.mCurBrightness == -1.0f) {
             this.mCurBrightness = this.getWindow().getAttributes().screenBrightness;
             if (this.mCurBrightness <= 0.01f) {
@@ -657,6 +725,8 @@ public class ViewVideo extends AppCompatActivity{
 
     @SuppressLint("WrongConstant")
     private void changeVolume(float percent) {
+        volumebar.setVisibility(View.VISIBLE);
+        textVolume.setVisibility(View.VISIBLE);
         this.volumebar.setVisibility(0);
         this.textVolume.setVisibility(0);
         if (this.mCurVolume == -1) {
@@ -673,6 +743,7 @@ public class ViewVideo extends AppCompatActivity{
             volume = 0;
         }
         this.volumebar.setProgress(volume);
+
     }
 
     @Override

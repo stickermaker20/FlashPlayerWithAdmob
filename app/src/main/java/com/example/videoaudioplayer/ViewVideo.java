@@ -71,6 +71,7 @@ public class ViewVideo extends AppCompatActivity{
     private float mCurBrightness = -1.0f;
     private int mCurVolume = -1;
     private int brightness;
+
     private Runnable updateVideoTime = new Runnable() {
         @Override
         public void run() {
@@ -102,12 +103,12 @@ public class ViewVideo extends AppCompatActivity{
                 }
             }, 1500);
             leftTime.setText(videoTotalTime);
-            if(videoCurrentTime.equals(videoTotalTime)){
-                play.setVisibility(View.VISIBLE);
-                pause.setVisibility(View.GONE);
-                videoView.pause();
-
-            }
+//            if(videoCurrentTime.equals(videoTotalTime)){
+//                if(!clickPlayPause) {
+//                    play.setVisibility(View.VISIBLE);
+//                    pause.setVisibility(View.GONE);
+//                }
+//            }
         }
     };
 
@@ -681,25 +682,7 @@ public class ViewVideo extends AppCompatActivity{
 
         }
     }
-//    class C13732 implements Runnable {
-//        C13732() {
-//        }
-//
-//        @SuppressLint("WrongConstant")
-//        public void run() {
-//            if (Long.valueOf(System.currentTimeMillis()).longValue() >= ViewVideo.this.lastSeekUpdateTime.longValue() + 1000) {
-//                Log.e("Scroll", "Stopped");
-//                ViewVideo.this.audioManager.setStreamMute(3, false);
-//                ViewVideo.this.bottomFrameLayout.setVisibility(8);
-//                if (ViewVideo.this.videoView.isPlaying()) {
-//                    ViewVideo.this.bottomFrameLayout.setVisibility(8);
-//                }
-//                ViewVideo.this.videoView.removeCallbacks(ViewVideo.this.horizontalScrollRunnable);
-//                return;
-//            }
-//            ViewVideo.this.videoView.postDelayed(ViewVideo.this.horizontalScrollRunnable, 1000);
-//        }
-//    }
+
     @SuppressLint("WrongConstant")
     private void changeBrightness(float percent) {
         brightbar.setVisibility(View.VISIBLE);

@@ -292,6 +292,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginLeft="40dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginRight="40dp"
                     android:background="?android:selectableItemBackground"
                     android:src="@drawable/ic_fullscreen_black_24dp"></ImageView>

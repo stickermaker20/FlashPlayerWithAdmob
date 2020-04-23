@@ -447,8 +447,8 @@ public class ViewVideo extends AppCompatActivity{
         popupScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final PictureInPictureParams.Builder pictureInPictureParamsBuilder;
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    final PictureInPictureParams.Builder pictureInPictureParamsBuilder;
                     pictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
                     Rational aspectRatio = new Rational(videoView.getWidth(), videoView.getHeight());
                     pictureInPictureParamsBuilder.setAspectRatio(aspectRatio).build();

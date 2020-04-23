@@ -96,12 +96,7 @@ public class ViewVideo extends AppCompatActivity{
             }
             currentTime.setText(videoCurrentTime);
             textSeekbar.setText(videoCurrentTime);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    textSeekbar.setVisibility(View.GONE);
-                }
-            }, 1500);
+
             leftTime.setText(videoTotalTime);
 //            if(videoCurrentTime.equals(videoTotalTime)){
 //                if(!clickPlayPause) {
@@ -659,11 +654,11 @@ public class ViewVideo extends AppCompatActivity{
     public void onHorizontalScroll(boolean seekForward) {
         textSeekbar.setVisibility(View.VISIBLE);
         if (((seekForward && this.videoView.canSeekForward()) || (!seekForward && this.videoView.canSeekBackward())) ) {
-//            if (this.bottomFrameLayout.getVisibility() == 8) {
-//                this.bottomFrameLayout.setVisibility(0);
-//            }
-            this.audioManager.setStreamMute(3, true);
-          //  this.videoView.removeCallbacks(this.horizontalScrollRunnable);
+            if (this.bottomFrameLayout.getVisibility() == View.GONE) {
+                this.bottomFrameLayout.setVisibility(View.VISIBLE);
+            }
+           // this.audioManager.setStreamMute(3, true);
+//            this.videoView.removeCallbacks(this.horizontalScrollRunnable);
 //            if (this.scroll_position.getVisibility() == 8) {
 //                this.scroll_position.setVisibility(0);
 //            }
@@ -673,13 +668,26 @@ public class ViewVideo extends AppCompatActivity{
                 this.currentPosition = this.videoView.getCurrentPosition();
                 this.currentPosition = this.videoView.getCurrentPosition() + 700;
                 this.videoView.seekTo((int) currentPosition);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        textSeekbar.setVisibility(View.GONE);
+                        bottomFrameLayout.setVisibility(View.GONE);
+                    }
+                }, 1500);
                 return;
             }
             Log.i("ViewGestureListener", "Rewinding");
             this.currentPosition = this.videoView.getCurrentPosition();
             this.currentPosition = this.videoView.getCurrentPosition() - 700;
             this.videoView.seekTo((int) currentPosition);
-
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    textSeekbar.setVisibility(View.GONE);
+                    bottomFrameLayout.setVisibility(View.GONE);
+                }
+            }, 1500);
         }
     }
 

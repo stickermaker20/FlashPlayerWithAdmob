@@ -31,12 +31,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.formats.NativeAdOptions;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.cast.TextTrackStyle;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.swipper.library.Swipper;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class ViewVideo extends AppCompatActivity{
@@ -71,6 +78,12 @@ public class ViewVideo extends AppCompatActivity{
     private float mCurBrightness = -1.0f;
     private int mCurVolume = -1;
     private int brightness;
+    //interstitial ad
+    private InterstitialAd mInterstitialAd;
+    //native ad
+    TemplateView template;
+
+
 
     private Runnable updateVideoTime = new Runnable() {
         @Override
@@ -131,9 +144,32 @@ public class ViewVideo extends AppCompatActivity{
 
 
     @Override
+    public void onBackPressed() {
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_video);
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        interstitialAd();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        }, 30000);
+        template = findViewById(R.id.my_template);
+        template.setVisibility(View.GONE);
         videoTitleText=(TextView) findViewById(R.id.videoTitle);
         backArrow=(ImageView) findViewById(R.id.backArrow);
         videoView=(VideoView) findViewById(R.id.videoView);
@@ -301,6 +337,7 @@ public class ViewVideo extends AppCompatActivity{
                 bottomFrameLayout.setVisibility(View.VISIBLE);
                 rotateScreen.setVisibility(View.VISIBLE);
                 framesVisibility=true;
+                nativeAd();
 
 
             }
@@ -308,6 +345,7 @@ public class ViewVideo extends AppCompatActivity{
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                template.setVisibility(View.GONE);
                 videoView.start();
                 play.setVisibility(View.GONE);
                 pause.setVisibility(View.VISIBLE);
@@ -330,7 +368,7 @@ public class ViewVideo extends AppCompatActivity{
                 if(!screenLandscape) {
                     setRequestedOrientation(0);
                     screenLandscape=true;
-                    videoView.start();
+                    //videoView.start();
                 }else{
                     screenLandscape=false;
                     setRequestedOrientation(1);
@@ -457,6 +495,9 @@ public class ViewVideo extends AppCompatActivity{
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mInterstitialAd.isLoaded()) {
+                    mInterstitialAd.show();
+                }
                 finish();
             }
         });
@@ -519,21 +560,22 @@ public class ViewVideo extends AppCompatActivity{
                     topFrameLayout.setVisibility(View.VISIBLE);
                     bottomFrameLayout.setVisibility(View.VISIBLE);
                     rotateScreen.setVisibility(View.VISIBLE);
-                    if(videoView.isPlaying()){
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(!framesVisibility) {
-                                    topFrameLayout.setVisibility(View.GONE);
-                                    bottomFrameLayout.setVisibility(View.GONE);
-                                    rotateScreen.setVisibility(View.GONE);
-                                    framesVisibility=false;
-                                }
-                            }
-                        }, 4000);
-                    }else{
-                        framesVisibility=true;
-                    }
+                    framesVisibility=true;
+//                    if(videoView.isPlaying()){
+//                        new Handler().postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if(!framesVisibility) {
+//                                    topFrameLayout.setVisibility(View.GONE);
+//                                    bottomFrameLayout.setVisibility(View.GONE);
+//                                    rotateScreen.setVisibility(View.GONE);
+//                                    framesVisibility=false;
+//                                }
+//                            }
+//                        }, 4000);
+//                    }else{
+//                        framesVisibility=true;
+//                    }
                 }
             }else{
                 screenUnlock.setVisibility(View.VISIBLE);
@@ -555,6 +597,7 @@ public class ViewVideo extends AppCompatActivity{
         public boolean onDoubleTap(MotionEvent e) {
             if(videoView.isPlaying()){
                 videoView.pause();
+                nativeAd();
                 pause.setVisibility(View.GONE);
                 play.setVisibility(View.VISIBLE);
                 topFrameLayout.setVisibility(View.VISIBLE);
@@ -570,6 +613,7 @@ public class ViewVideo extends AppCompatActivity{
                 }, 1000);
             }else{
                 videoView.start();
+                template.setVisibility(View.GONE);
                 play.setVisibility(View.GONE);
                 pause.setVisibility(View.VISIBLE);
                 textPlayPause.setText("PLAY");
@@ -654,15 +698,10 @@ public class ViewVideo extends AppCompatActivity{
     public void onHorizontalScroll(boolean seekForward) {
         textSeekbar.setVisibility(View.VISIBLE);
         if (((seekForward && this.videoView.canSeekForward()) || (!seekForward && this.videoView.canSeekBackward())) ) {
-            if (this.bottomFrameLayout.getVisibility() == View.GONE) {
+            if (this.bottomFrameLayout.getVisibility() == View.GONE && lockScreen==false) {
                 this.bottomFrameLayout.setVisibility(View.VISIBLE);
+                this.topFrameLayout.setVisibility(View.VISIBLE);
             }
-           // this.audioManager.setStreamMute(3, true);
-//            this.videoView.removeCallbacks(this.horizontalScrollRunnable);
-//            if (this.scroll_position.getVisibility() == 8) {
-//                this.scroll_position.setVisibility(0);
-//            }
-          //  this.videoView.postDelayed(this.horizontalScrollRunnable, 1000);
             if (seekForward) {
                 Log.i("ViewGestureListener", "Forwarding");
                 this.currentPosition = this.videoView.getCurrentPosition();
@@ -673,8 +712,11 @@ public class ViewVideo extends AppCompatActivity{
                     public void run() {
                         textSeekbar.setVisibility(View.GONE);
                         bottomFrameLayout.setVisibility(View.GONE);
+                        topFrameLayout.setVisibility(View.GONE);
+                        rotateScreen.setVisibility(View.GONE);
+                        framesVisibility=false;
                     }
-                }, 1500);
+                }, 1200);
                 return;
             }
             Log.i("ViewGestureListener", "Rewinding");
@@ -686,8 +728,11 @@ public class ViewVideo extends AppCompatActivity{
                 public void run() {
                     textSeekbar.setVisibility(View.GONE);
                     bottomFrameLayout.setVisibility(View.GONE);
+                    topFrameLayout.setVisibility(View.GONE);
+                    rotateScreen.setVisibility(View.GONE);
+                    framesVisibility=false;
                 }
-            }, 1500);
+            }, 1200);
         }
     }
 
@@ -748,5 +793,39 @@ public class ViewVideo extends AppCompatActivity{
     private  int hideSystemBars(){
         return View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION ;
+    }
+    private void interstitialAd(){
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+
+    }
+    private  void nativeAd(){
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
+                .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                        // Show the ad.
+                        NativeTemplateStyle styles = new
+                                NativeTemplateStyle.Builder().build();
+
+                      template.setVisibility(View.VISIBLE);
+                        template.setStyles(styles);
+                        template.setNativeAd(unifiedNativeAd);
+                    }
+                })
+                .withAdListener(new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(int errorCode) {
+                        // Handle the failure by logging, altering the UI, and so on.
+                        Toast.makeText(ViewVideo.this, "fail", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .withNativeAdOptions(new NativeAdOptions.Builder()
+                        // Methods in the NativeAdOptions.Builder class can be
+                        // used here to specify individual options settings.
+                        .build())
+                .build();
+        adLoader.loadAd(new AdRequest.Builder().build());
     }
 }

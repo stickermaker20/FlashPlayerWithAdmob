@@ -18,6 +18,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -26,6 +29,9 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
     ArrayList <String> folderName;
     ArrayList <Integer> totalVideo;
     Activity activity;
+    NativeTemplateStyle styles;
+    UnifiedNativeAd unifiedNativeAd;
+    int v=0;
 
 
     public VideoFoldersAdapter(ArrayList<String> folderName,ArrayList<Integer> totalVideo, Activity activity){
@@ -33,54 +39,153 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
         this.totalVideo=totalVideo;
         this.activity=activity;
     }
+
+    public VideoFoldersAdapter(ArrayList<String> folderName, ArrayList<Integer> totalVideo, VideoFolderActivity activity, NativeTemplateStyle styles, UnifiedNativeAd unifiedNativeAd) {
+        this.folderName=folderName;
+        this.totalVideo=totalVideo;
+        this.activity=activity;
+        this.styles=styles;
+        this.unifiedNativeAd=unifiedNativeAd;
+    }
+
     @NonNull
     @Override
     public VideoFoldersAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.video_folders_items,parent,false);
-        return new ViewHolder(view);
+        View view = null;
+        if(viewType == 1){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_folders_items, parent, false);
+            return new NativeAdViewHolder(view);
+
+        }else if(viewType == 2){
+//            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.banner_ad_layout, parent, false);
+//            return new BannerAdditionalHolder(view);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_folders_items, parent, false);
+            return new ViewHolder(view);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_folders_items, parent, false);
+            return new ViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull final VideoFoldersAdapter.ViewHolder holder, final int position) {
-        holder.folderName.setText(folderName.get(position));
-        holder.totalVideo.setText(totalVideo.get(position)+" Videos");
-        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceType")
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(activity,VideoList.class);
-                intent.putExtra("FolderName",folderName.get(position));
-                activity.startActivity(intent);
-               //fragment
-
-//                VideoListFragment videoListFragment=new VideoListFragment();
-////
-//                MainActivity myActivity = (MainActivity) context;
-//                FragmentTransaction fragmentTransaction = myActivity.getSupportFragmentManager().beginTransaction();
-//                fragmentTransaction.replace(R.id.pager, videoListFragment);
-//                fragmentTransaction.addToBackStack(null);
-//                fragmentTransaction.commit();
-////                final ViewPager viewPager= (ViewPager) myActivity.findViewById(R.id.pager);
-//////                TabLayout tabLayout=(TabLayout) myActivity.findViewById(R.id.tabLayout);
-////                viewPager.setAdapter(new PageAdapter(myActivity.getSupportFragmentManager(),4));
-////
-////                viewPager.setCurrentItem(2);
-
-
+        if (getItemViewType(position) == 1) {
+            if (styles != null) {
+                NativeAdViewHolder new_holder = (NativeAdViewHolder) holder;
+                        new_holder.template.setStyles(styles);
+                        new_holder.template.setNativeAd(unifiedNativeAd);
 
             }
-        });
+        } else if (getItemViewType(position) == 2) {
+            holder.folderName.setText(folderName.get(position));
+            holder.totalVideo.setText(totalVideo.get(position) + " Videos");
+            holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("ResourceType")
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(activity, VideoList.class);
+                    intent.putExtra("FolderName", folderName.get(position));
+                    activity.startActivity(intent);
+
+
+                }
+            });
+        } else {
+            if(position>=folderName.size()){
+                holder.folderName.setText(folderName.get(5));
+                holder.totalVideo.setText(totalVideo.get(5) + " Videos");
+                holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+                    @SuppressLint("ResourceType")
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(activity, VideoList.class);
+                        intent.putExtra("FolderName", folderName.get(5));
+                        activity.startActivity(intent);
+
+
+                    }
+                });
+            }else{
+                holder.folderName.setText(folderName.get(position));
+                holder.totalVideo.setText(totalVideo.get(position) + " Videos");
+                holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+                    @SuppressLint("ResourceType")
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(activity, VideoList.class);
+                        intent.putExtra("FolderName", folderName.get(position));
+                        activity.startActivity(intent);
+
+
+                    }
+                });
+            }
+
+        }
     }
+
 
     @Override
     public int getItemCount() {
-        return folderName.size();
-    }
+        if(styles !=null){
+            if(folderName.size()<=5){
+                v=folderName.size()+1;
+                return  v;
+            }else{
+                v=folderName.size()+2;
+                return  v;
+            }
+        }else{
+            return folderName.size();
+        }
 
+    }
+    @Override
+    public int getItemViewType(int position) {
+        if (styles !=null) {
+            if (folderName.size() <= 5) {
+                if (position == folderName.size()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+
+            }
+            else {
+                if (position == 5) {
+                    return 1;
+                } else if(position==v-1){
+                    return 2;
+                }
+                else {
+                    return 0;
+                }
+            }
+        } else {
+            return 0;
+        }
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView folderName,totalVideo;
         RelativeLayout relativeLayout;
         public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            relativeLayout=(RelativeLayout) itemView.findViewById(R.id.relativeLayout);
+            folderName=(TextView) itemView.findViewById(R.id.folderName);
+            totalVideo=(TextView) itemView.findViewById(R.id.totalVideo);
+        }
+    }
+    public class NativeAdViewHolder extends ViewHolder {
+        TemplateView template;
+        public NativeAdViewHolder(@NonNull View itemView) {
+            super(itemView);
+            template = itemView.findViewById(R.id.my_template);
+        }
+    }
+    public class BannerAdViewHolder extends ViewHolder {
+        TextView folderName,totalVideo;
+        RelativeLayout relativeLayout;
+        public BannerAdViewHolder(@NonNull View itemView) {
             super(itemView);
             relativeLayout=(RelativeLayout) itemView.findViewById(R.id.relativeLayout);
             folderName=(TextView) itemView.findViewById(R.id.folderName);

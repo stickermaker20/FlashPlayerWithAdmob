@@ -14,6 +14,13 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:backgroundTint="#000"></VideoView>
+    <com.google.android.ads.nativetemplates.TemplateView
+        android:id="@+id/my_template"
+        android:layout_centerInParent="true"
+    app:gnt_template_type="@layout/gnt_medium_template_view"
+    android:layout_width="300dp"
+    android:layout_height="240dp"
+        />
     <TextView
         android:textSize="25.0sp"
         android:textStyle="bold"
@@ -120,6 +127,8 @@
                 android:layout_toRightOf="@+id/backArrow"
                 android:text="PUBG MOBILE 122121"
                 android:textColor="#FFF"
+                android:layout_toLeftOf="@+id/popupScreen"
+                android:layout_marginRight="5dp"
                 android:textSize="15dp"></TextView>
             <ImageView
                 android:id="@+id/popupScreen"
@@ -217,7 +226,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
 
                 <ImageView
                     android:id="@+id/screenLock"

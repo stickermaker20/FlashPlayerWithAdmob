@@ -12,6 +12,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
+import android.widget.Toast;
+
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.formats.NativeAdOptions;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -20,6 +33,8 @@ public class VideoFolderActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<String> folderName= new ArrayList<>();
     ArrayList<Integer> totalVideos= new ArrayList<>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +47,13 @@ public class VideoFolderActivity extends AppCompatActivity {
                 return;
             }
         }
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
         recyclerView=(RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fetchVideoFolders();
@@ -69,6 +91,7 @@ public class VideoFolderActivity extends AppCompatActivity {
 
         videocount(singleFolderName);
         recyclerView.setAdapter(new VideoFoldersAdapter(singleFolderName,totalVideos,VideoFolderActivity.this));
+        nativeAd(singleFolderName);
     }
 
     public void videocount(ArrayList<String> singleFolderName){
@@ -87,4 +110,34 @@ public class VideoFolderActivity extends AppCompatActivity {
             }
             totalVideos.add(count);
         }}
+
+    private  void nativeAd(final ArrayList<String> singleFolderName){
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
+                .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                        // Show the ad.
+                        NativeTemplateStyle styles = new
+                                NativeTemplateStyle.Builder().build();
+                        recyclerView.setAdapter(new VideoFoldersAdapter(singleFolderName,totalVideos,VideoFolderActivity.this,styles,unifiedNativeAd));
+//                        TemplateView template = findViewById(R.id.my_template);
+//                        template.setStyles(styles);
+//                        template.setNativeAd(unifiedNativeAd);
+                    }
+                })
+                .withAdListener(new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(int errorCode) {
+                        // Handle the failure by logging, altering the UI, and so on.
+                        Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .withNativeAdOptions(new NativeAdOptions.Builder()
+                        // Methods in the NativeAdOptions.Builder class can be
+                        // used here to specify individual options settings.
+                        .build())
+                .build();
+        adLoader.loadAd(new AdRequest.Builder().build());
+    }
 }

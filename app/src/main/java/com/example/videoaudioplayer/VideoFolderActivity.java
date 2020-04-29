@@ -1,17 +1,21 @@
 package com.example.videoaudioplayer;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -111,6 +115,32 @@ public class VideoFolderActivity extends AppCompatActivity {
             }
             totalVideos.add(count);
         }}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent viewIntent;
+        switch (item.getItemId()){
+            case R.id.action_more:
+                viewIntent =
+                        new Intent("android.intent.action.VIEW",
+                                Uri.parse("https://play.google.com/store/apps/developer?id=prog2app"));
+                startActivity(viewIntent);
+                break;
+            case R.id.action_rate:
+                viewIntent =
+                        new Intent("android.intent.action.VIEW",
+                                Uri.parse("https://play.google.com/store/apps/details?id=com.prog2app.mp4videoplayer"));
+                startActivity(viewIntent);
+
+                break;
+        }
+        return true;
+    }
 
     private  void nativeAd(final ArrayList<String> singleFolderName){
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
@@ -145,4 +175,5 @@ public class VideoFolderActivity extends AppCompatActivity {
 //        mAdView.loadAd(adRequest);
 //
 //    }
+
 }

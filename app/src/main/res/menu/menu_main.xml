@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.ah.studio.hd.video.player.MainActivity">
+    <item
+        android:id="@+id/action_more"
+        android:orderInCategory="100"
+        android:title="More Apps"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_rate"
+        android:orderInCategory="100"
+        android:title="Rate Us"
+        app:showAsAction="never" />
+</menu>

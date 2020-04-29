@@ -20,6 +20,7 @@ import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
@@ -121,9 +122,6 @@ public class VideoFolderActivity extends AppCompatActivity {
                         NativeTemplateStyle styles = new
                                 NativeTemplateStyle.Builder().build();
                         recyclerView.setAdapter(new VideoFoldersAdapter(singleFolderName,totalVideos,VideoFolderActivity.this,styles,unifiedNativeAd));
-//                        TemplateView template = findViewById(R.id.my_template);
-//                        template.setStyles(styles);
-//                        template.setNativeAd(unifiedNativeAd);
                     }
                 })
                 .withAdListener(new AdListener() {
@@ -140,4 +138,11 @@ public class VideoFolderActivity extends AppCompatActivity {
                 .build();
         adLoader.loadAd(new AdRequest.Builder().build());
     }
+//    private void bannerAd(){
+//        AdView mAdView;
+//        mAdView = findViewById(R.id.adView);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        mAdView.loadAd(adRequest);
+//
+//    }
 }

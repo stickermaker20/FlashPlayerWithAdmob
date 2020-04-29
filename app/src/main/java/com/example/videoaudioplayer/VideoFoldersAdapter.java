@@ -20,6 +20,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
 import com.google.android.ads.nativetemplates.TemplateView;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.material.tabs.TabLayout;
 
@@ -31,7 +33,7 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
     Activity activity;
     NativeTemplateStyle styles;
     UnifiedNativeAd unifiedNativeAd;
-    int v=0;
+    int showingPosition=1;
 
 
     public VideoFoldersAdapter(ArrayList<String> folderName,ArrayList<Integer> totalVideo, Activity activity){
@@ -53,14 +55,12 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
     public VideoFoldersAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = null;
         if(viewType == 1){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_folders_items, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.native_ad_layout, parent, false);
             return new NativeAdViewHolder(view);
 
         }else if(viewType == 2){
-//            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.banner_ad_layout, parent, false);
-//            return new BannerAdditionalHolder(view);
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_folders_items, parent, false);
-            return new ViewHolder(view);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.banner_ad_layout, parent, false);
+            return new BannerAdViewHolder(view);
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_folders_items, parent, false);
             return new ViewHolder(view);
@@ -70,36 +70,24 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
     @Override
     public void onBindViewHolder(@NonNull final VideoFoldersAdapter.ViewHolder holder, final int position) {
         if (getItemViewType(position) == 1) {
-            if (styles != null) {
                 NativeAdViewHolder new_holder = (NativeAdViewHolder) holder;
                         new_holder.template.setStyles(styles);
                         new_holder.template.setNativeAd(unifiedNativeAd);
 
-            }
         } else if (getItemViewType(position) == 2) {
-            holder.folderName.setText(folderName.get(position));
-            holder.totalVideo.setText(totalVideo.get(position) + " Videos");
-            holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("ResourceType")
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(activity, VideoList.class);
-                    intent.putExtra("FolderName", folderName.get(position));
-                    activity.startActivity(intent);
-
-
-                }
-            });
+            showingPosition=showingPosition+1;
+            BannerAdViewHolder banner_new_holder = (BannerAdViewHolder) holder;
+            banner_new_holder.mAdView.loadAd(new AdRequest.Builder().build());
         } else {
-            if(position>=folderName.size()){
-                holder.folderName.setText(folderName.get(5));
-                holder.totalVideo.setText(totalVideo.get(5) + " Videos");
+            if(position>5 && styles !=null){
+                holder.folderName.setText(folderName.get(position-showingPosition));
+                holder.totalVideo.setText(totalVideo.get(position-showingPosition) + " Videos");
                 holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
                     @SuppressLint("ResourceType")
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(activity, VideoList.class);
-                        intent.putExtra("FolderName", folderName.get(5));
+                        intent.putExtra("FolderName", folderName.get(position-showingPosition));
                         activity.startActivity(intent);
 
 
@@ -129,11 +117,12 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
     public int getItemCount() {
         if(styles !=null){
             if(folderName.size()<=5){
-                v=folderName.size()+1;
+                int v=folderName.size()+1;
                 return  v;
             }else{
-                v=folderName.size()+2;
-                return  v;
+                int v=(folderName.size()-5)/8;
+                int x=folderName.size()+1+v;
+                return  x;
             }
         }else{
             return folderName.size();
@@ -154,7 +143,7 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
             else {
                 if (position == 5) {
                     return 1;
-                } else if(position==v-1){
+                } else if(position==14 || position == 23 || position == 32 || position == 41 || position == 50){
                     return 2;
                 }
                 else {
@@ -165,6 +154,7 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
             return 0;
         }
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView folderName,totalVideo;
         RelativeLayout relativeLayout;
@@ -183,13 +173,11 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
         }
     }
     public class BannerAdViewHolder extends ViewHolder {
-        TextView folderName,totalVideo;
-        RelativeLayout relativeLayout;
+        AdView mAdView;
         public BannerAdViewHolder(@NonNull View itemView) {
             super(itemView);
-            relativeLayout=(RelativeLayout) itemView.findViewById(R.id.relativeLayout);
-            folderName=(TextView) itemView.findViewById(R.id.folderName);
-            totalVideo=(TextView) itemView.findViewById(R.id.totalVideo);
+
+            mAdView = itemView.findViewById(R.id.adView);
         }
     }
 }

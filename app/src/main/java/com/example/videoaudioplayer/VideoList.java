@@ -9,6 +9,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.widget.Toast;
+
+import com.google.android.ads.nativetemplates.NativeTemplateStyle;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.formats.NativeAdOptions;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -62,5 +71,32 @@ public class VideoList extends AppCompatActivity {
 
         }
         recyclerView.setAdapter(new VideoListAdapter(videosUri,videosThumb,videosTitle,videosDuration,VideoList.this));
+        nativeAd();
+    }
+    private  void nativeAd(){
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
+                .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                        // Show the ad.
+                        NativeTemplateStyle styles = new
+                                NativeTemplateStyle.Builder().build();
+                        recyclerView.setAdapter(new VideoListAdapter(videosUri,videosThumb,videosTitle,videosDuration,VideoList.this,styles,unifiedNativeAd));
+                    }
+                })
+                .withAdListener(new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(int errorCode) {
+                        // Handle the failure by logging, altering the UI, and so on.
+                        Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .withNativeAdOptions(new NativeAdOptions.Builder()
+                        // Methods in the NativeAdOptions.Builder class can be
+                        // used here to specify individual options settings.
+                        .build())
+                .build();
+        adLoader.loadAd(new AdRequest.Builder().build());
     }
 }

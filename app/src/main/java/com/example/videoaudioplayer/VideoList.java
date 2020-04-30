@@ -3,10 +3,11 @@ package com.example.videoaudioplayer;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import wseemann.media.FFmpegMediaMetadataRetriever;
+//import wseemann.media.FFmpegMediaMetadataRetriever;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -27,10 +28,10 @@ public class VideoList extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<String> videosUri = new ArrayList<>();
     ArrayList<String> videosTitle= new ArrayList<>();
-    ArrayList<String> videosThumb= new ArrayList<>();
+    //ArrayList<String> videosThumb= new ArrayList<>();
     ArrayList<String> videosDuration= new ArrayList<>();
     //new lib for duration
-    FFmpegMediaMetadataRetriever mFFmpegMediaMetadataRetriever = new FFmpegMediaMetadataRetriever();
+    MediaMetadataRetriever mMediaMetadataRetriever = new MediaMetadataRetriever();
 
 
     @Override
@@ -50,7 +51,7 @@ public class VideoList extends AppCompatActivity {
     }
     private void fetchVideos(String folderName) {
         Uri uri;
-        int column_index_data,thum,title;//duration;
+        int column_index_data,title;//thum,duration;
         String mVideoDuration;
         Cursor cursor;
         uri=MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
@@ -66,18 +67,18 @@ public class VideoList extends AppCompatActivity {
         column_index_data=cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
         title=cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
         //duration=cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
-        thum=cursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA);
+        //thum=cursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA);
         while (cursor.moveToNext()){
             videosUri.add(cursor.getString(column_index_data));
-            videosThumb.add(cursor.getString(thum));
+            //videosThumb.add(cursor.getString(thum));
             videosTitle.add(cursor.getString(title));
             //new code for duration
-            mFFmpegMediaMetadataRetriever.setDataSource(cursor.getString(column_index_data));
-            mVideoDuration = mFFmpegMediaMetadataRetriever.extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION);
+            mMediaMetadataRetriever.setDataSource(cursor.getString(column_index_data));
+            mVideoDuration = mMediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
             videosDuration.add(mVideoDuration);
 
         }
-        recyclerView.setAdapter(new VideoListAdapter(videosUri,videosThumb,videosTitle,videosDuration,VideoList.this));
+        recyclerView.setAdapter(new VideoListAdapter(videosUri,videosTitle,videosDuration,VideoList.this));
         nativeAd();
     }
     private  void nativeAd(){
@@ -89,7 +90,7 @@ public class VideoList extends AppCompatActivity {
                         // Show the ad.
                         NativeTemplateStyle styles = new
                                 NativeTemplateStyle.Builder().build();
-                        recyclerView.setAdapter(new VideoListAdapter(videosUri,videosThumb,videosTitle,videosDuration,VideoList.this,styles,unifiedNativeAd));
+                        recyclerView.setAdapter(new VideoListAdapter(videosUri,videosTitle,videosDuration,VideoList.this,styles,unifiedNativeAd));
                     }
                 })
                 .withAdListener(new AdListener() {

@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.ViewHolder> {
     ArrayList<String> videosUri;
-    ArrayList<String> videosThumb;
+    //ArrayList<String> videosThumb;
     ArrayList<String> videosTitle;
     ArrayList<String> videosDuration;
     Bitmap bmThumbnail;
@@ -35,19 +35,19 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     NativeTemplateStyle styles;
     UnifiedNativeAd unifiedNativeAd;
     int showingPosition=1;
-    public VideoListAdapter(ArrayList<String> videosUri, ArrayList<String> videosThumb, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Activity activity) {
+    public VideoListAdapter(ArrayList<String> videosUri, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Activity activity) {
         this.videosUri=videosUri;
         this.videosTitle=videosTitle;
-        this.videosThumb=videosThumb;
+        //this.videosThumb=videosThumb;
         this.videosDuration=videosDuration;
         this.activity=activity;
 
     }
 
-    public VideoListAdapter(ArrayList<String> videosUri, ArrayList<String> videosThumb, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Activity activity, NativeTemplateStyle styles, UnifiedNativeAd unifiedNativeAd) {
+    public VideoListAdapter(ArrayList<String> videosUri, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Activity activity, NativeTemplateStyle styles, UnifiedNativeAd unifiedNativeAd) {
         this.videosUri=videosUri;
         this.videosTitle=videosTitle;
-        this.videosThumb=videosThumb;
+        //this.videosThumb=videosThumb;
         this.videosDuration=videosDuration;
         this.activity=activity;
         this.styles=styles;

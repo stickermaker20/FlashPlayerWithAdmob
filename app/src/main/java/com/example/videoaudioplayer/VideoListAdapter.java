@@ -34,7 +34,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     Activity activity;
     NativeTemplateStyle styles;
     UnifiedNativeAd unifiedNativeAd;
-    int showingPosition=1;
+    int showingPosition=1,previousShowingPosition=0;
     public VideoListAdapter(ArrayList<String> videosUri, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Activity activity) {
         this.videosUri=videosUri;
         this.videosTitle=videosTitle;
@@ -79,7 +79,11 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
                 new_holder.template.setNativeAd(unifiedNativeAd);
 
         } else if (getItemViewType(position) == 2) {
-            showingPosition=showingPosition+1;
+            if(previousShowingPosition<showingPosition){
+                showingPosition=showingPosition+1;
+            }else{
+                showingPosition=showingPosition-1;
+            }
             BannerAdViewHolder banner_new_holder = (BannerAdViewHolder) holder;
             banner_new_holder.mAdView.loadAd(new AdRequest.Builder().build());
         } else {
@@ -100,6 +104,10 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
                             activity.startActivity(intent);
                         }
                     });
+                if(position-showingPosition==videosTitle.size()-1){
+                    previousShowingPosition=showingPosition;
+                    showingPosition=showingPosition-1;
+                }
 
             }else{
                 holder.videoName.setText(videosTitle.get(position));
@@ -118,6 +126,8 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
                         activity.startActivity(intent);
                     }
                 });
+                previousShowingPosition=0;
+                showingPosition=1;
             }
         }
     }

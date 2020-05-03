@@ -28,7 +28,6 @@ public class VideoList extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<String> videosUri = new ArrayList<>();
     ArrayList<String> videosTitle= new ArrayList<>();
-    //ArrayList<String> videosThumb= new ArrayList<>();
     ArrayList<String> videosDuration= new ArrayList<>();
     //new lib for duration
     MediaMetadataRetriever mMediaMetadataRetriever = new MediaMetadataRetriever();
@@ -90,6 +89,7 @@ public class VideoList extends AppCompatActivity {
                         // Show the ad.
                         NativeTemplateStyle styles = new
                                 NativeTemplateStyle.Builder().build();
+                        addingAdsItems();
                         recyclerView.setAdapter(new VideoListAdapter(videosUri,videosTitle,videosDuration,VideoList.this,styles,unifiedNativeAd));
                     }
                 })
@@ -106,5 +106,24 @@ public class VideoList extends AppCompatActivity {
                         .build())
                 .build();
         adLoader.loadAd(new AdRequest.Builder().build());
+    }
+    private void addingAdsItems() {
+        if(videosTitle.size()<=5){
+            videosTitle.add("native add");
+            videosUri.add("native add");
+            videosDuration.add("native add");
+        }else{
+            videosTitle.add(5,"native add");
+            videosUri.add(5,"native add");
+            videosDuration.add(5,"native add");
+            for(int i=0;i<videosTitle.size();i++){
+                if(i==14 || i == 23 || i == 32 || i == 41 || i == 50) {
+                    videosTitle.add(i,"banner add");
+                    videosUri.add(i,"banner add");
+                    videosDuration.add(i,"banner add");
+                }
+            }
+        }
+
     }
 }

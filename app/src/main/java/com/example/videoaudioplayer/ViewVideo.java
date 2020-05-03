@@ -82,6 +82,7 @@ public class ViewVideo extends AppCompatActivity{
     private InterstitialAd mInterstitialAd;
     //native ad
     TemplateView template;
+    String adsLoaded;
 
 
 
@@ -199,6 +200,7 @@ public class ViewVideo extends AppCompatActivity{
         videoUri=getIntent().getStringArrayListExtra("VideoUri");
         videoTitle=getIntent().getStringArrayListExtra("VideoTitle");
         position=getIntent().getIntExtra("VideoPosition",0);
+        adsLoaded=getIntent().getStringExtra("AdsLoaded");
         videoTitleText.setText(videoTitle.get(position));
         videoView.setVideoURI(Uri.parse(videoUri.get(position)));
         videoView.start();
@@ -299,6 +301,7 @@ public class ViewVideo extends AppCompatActivity{
                 if(position<0){
                     position=videoUri.size()-1;
                 }
+               positionAdjustment("minus");
                 videoTitleText.setText(videoTitle.get(position));
                 videoView.setVideoURI(Uri.parse(videoUri.get(position)));
                 if(!videoView.isPlaying()){
@@ -313,6 +316,7 @@ public class ViewVideo extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 position=position+1;
+               positionAdjustment("plus");
                 if(position>(videoUri.size()-1)){
                     position=0;
                 }
@@ -827,5 +831,26 @@ public class ViewVideo extends AppCompatActivity{
                         .build())
                 .build();
         adLoader.loadAd(new AdRequest.Builder().build());
+    }
+    private void positionAdjustment(String sign) {
+        if (adsLoaded.equals("Yes")) {
+            if (videoTitle.size() <= 5) {
+                if (position == videoTitle.size() - 1) {
+                    if(sign.equals("minus")) {
+                        position = position - 1;
+                    }else{
+                        position = position + 1;
+                    }
+                }
+            } else {
+                if (position==5 || position == 14 || position == 23 || position == 32 || position == 41 || position == 50) {
+                    if(sign.equals("minus")) {
+                        position = position - 1;
+                    }else{
+                        position = position + 1;
+                    }
+                }
+            }
+        }
     }
 }

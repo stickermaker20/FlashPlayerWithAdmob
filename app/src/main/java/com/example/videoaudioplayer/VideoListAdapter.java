@@ -27,18 +27,15 @@ import java.util.ArrayList;
 
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.ViewHolder> {
     ArrayList<String> videosUri;
-    //ArrayList<String> videosThumb;
     ArrayList<String> videosTitle;
     ArrayList<String> videosDuration;
     Bitmap bmThumbnail;
     Activity activity;
     NativeTemplateStyle styles;
     UnifiedNativeAd unifiedNativeAd;
-    int showingPosition=1,previousShowingPosition=0;
     public VideoListAdapter(ArrayList<String> videosUri, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Activity activity) {
         this.videosUri=videosUri;
         this.videosTitle=videosTitle;
-        //this.videosThumb=videosThumb;
         this.videosDuration=videosDuration;
         this.activity=activity;
 
@@ -47,7 +44,6 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     public VideoListAdapter(ArrayList<String> videosUri, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Activity activity, NativeTemplateStyle styles, UnifiedNativeAd unifiedNativeAd) {
         this.videosUri=videosUri;
         this.videosTitle=videosTitle;
-        //this.videosThumb=videosThumb;
         this.videosDuration=videosDuration;
         this.activity=activity;
         this.styles=styles;
@@ -79,37 +75,9 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
                 new_holder.template.setNativeAd(unifiedNativeAd);
 
         } else if (getItemViewType(position) == 2) {
-            if(previousShowingPosition<showingPosition){
-                showingPosition=showingPosition+1;
-            }else{
-                showingPosition=showingPosition-1;
-            }
             BannerAdViewHolder banner_new_holder = (BannerAdViewHolder) holder;
             banner_new_holder.mAdView.loadAd(new AdRequest.Builder().build());
         } else {
-            if(position>5 && styles !=null){
-                    holder.videoName.setText(videosTitle.get(position-showingPosition));
-                    holder.videoDescription.setText(getTimeString(Integer.parseInt(videosDuration.get(position-showingPosition))));
-
-                    bmThumbnail = ThumbnailUtils.createVideoThumbnail(videosUri.get(position-showingPosition), MediaStore.Video.Thumbnails.MICRO_KIND);
-                    bmThumbnail = ThumbnailUtils.extractThumbnail(bmThumbnail, 970, 580);
-                    holder.imageView.setImageBitmap(bmThumbnail);
-                    holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(activity, ViewVideo.class);
-                            intent.putStringArrayListExtra("VideoUri", videosUri);
-                            intent.putStringArrayListExtra("VideoTitle", videosTitle);
-                            intent.putExtra("VideoPosition", position-showingPosition);
-                            activity.startActivity(intent);
-                        }
-                    });
-                if(position-showingPosition==videosTitle.size()-1){
-                    previousShowingPosition=showingPosition;
-                    showingPosition=showingPosition-1;
-                }
-
-            }else{
                 holder.videoName.setText(videosTitle.get(position));
                 holder.videoDescription.setText(getTimeString(Integer.parseInt(videosDuration.get(position))));
 
@@ -123,37 +91,27 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
                         intent.putStringArrayListExtra("VideoUri", videosUri);
                         intent.putStringArrayListExtra("VideoTitle", videosTitle);
                         intent.putExtra("VideoPosition", position);
+                        if(styles!=null) {
+                            intent.putExtra("AdsLoaded", "Yes");
+                        }else{
+                            intent.putExtra("AdsLoaded", "No");
+                        }
                         activity.startActivity(intent);
                     }
                 });
-                previousShowingPosition=0;
-                showingPosition=1;
-            }
         }
     }
 
 
     @Override
     public int getItemCount() {
-        if(styles !=null){
-            if(videosTitle.size()<=5){
-                int v=videosTitle.size()+1;
-                return  v;
-            }else{
-                int v=(videosTitle.size()-5)/8;
-                int x=videosTitle.size()+1+v;
-                return  x;
-            }
-        }else{
             return videosTitle.size();
-        }
-
     }
     @Override
     public int getItemViewType(int position) {
         if (styles !=null) {
             if (videosTitle.size() <= 5) {
-                if (position == videosTitle.size()) {
+                if (position == videosTitle.size()-1) {
                     return 1;
                 } else {
                     return 0;

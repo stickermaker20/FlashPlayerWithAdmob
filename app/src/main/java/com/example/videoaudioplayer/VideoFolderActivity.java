@@ -168,12 +168,6 @@ public class VideoFolderActivity extends AppCompatActivity {
                 .build();
         adLoader.loadAd(new AdRequest.Builder().build());
     }
-//    private void bannerAd(){
-//        AdView mAdView;
-//        mAdView = findViewById(R.id.adView);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-//
-//    }
+
 
 }

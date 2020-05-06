@@ -1,4 +1,4 @@
-package com.example.videoaudioplayer;
+package com.prog2app.play;
 
 import android.database.Cursor;
 import android.net.Uri;

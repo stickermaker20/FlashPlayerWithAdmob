@@ -1,18 +1,13 @@
-package com.example.videoaudioplayer;
+package com.prog2app.play;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MotionEventCompat;
 
 import android.annotation.SuppressLint;
 import android.app.PictureInPictureParams;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -800,12 +795,12 @@ public class ViewVideo extends AppCompatActivity{
     }
     private void interstitialAd(){
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId("ca-app-pub-2758711540829766/2283209648");
 
     }
     private  void nativeAd(){
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
-        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
+        MobileAds.initialize(this, "ca-app-pub-2758711540829766~2235587113");
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-2758711540829766/2923705024")
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
@@ -822,7 +817,7 @@ public class ViewVideo extends AppCompatActivity{
                     @Override
                     public void onAdFailedToLoad(int errorCode) {
                         // Handle the failure by logging, altering the UI, and so on.
-                        Toast.makeText(ViewVideo.this, "fail", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(ViewVideo.this, "fail", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .withNativeAdOptions(new NativeAdOptions.Builder()

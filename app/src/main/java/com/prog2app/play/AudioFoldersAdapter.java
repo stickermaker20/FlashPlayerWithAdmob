@@ -1,4 +1,4 @@
-package com.example.videoaudioplayer;
+package com.prog2app.play;
 
 import android.content.Context;
 import android.content.Intent;

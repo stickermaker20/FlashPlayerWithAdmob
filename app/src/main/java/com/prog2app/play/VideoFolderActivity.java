@@ -1,4 +1,4 @@
-package com.example.videoaudioplayer;
+package com.prog2app.play;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,15 +16,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
-import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
@@ -134,7 +130,7 @@ public class VideoFolderActivity extends AppCompatActivity {
             case R.id.action_rate:
                 viewIntent =
                         new Intent("android.intent.action.VIEW",
-                                Uri.parse("https://play.google.com/store/apps/details?id=com.prog2app.mp4videoplayer"));
+                                Uri.parse("https://play.google.com/store/apps/developer?id=prog2app"));
                 startActivity(viewIntent);
 
                 break;
@@ -143,8 +139,8 @@ public class VideoFolderActivity extends AppCompatActivity {
     }
 
     private  void nativeAd(final ArrayList<String> singleFolderName){
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
-        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
+        MobileAds.initialize(this, "ca-app-pub-2758711540829766~2235587113");
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-2758711540829766/2923705024")
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
@@ -158,7 +154,7 @@ public class VideoFolderActivity extends AppCompatActivity {
                     @Override
                     public void onAdFailedToLoad(int errorCode) {
                         // Handle the failure by logging, altering the UI, and so on.
-                        Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .withNativeAdOptions(new NativeAdOptions.Builder()

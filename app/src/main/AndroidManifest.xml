@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.videoaudioplayer">
+    package="com.prog2app.play">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-2758711540829766~2235587113"/>
 
-        <activity android:name=".VideoFolderActivity">
+        <activity android:name="com.prog2app.play.VideoFolderActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AudioList" />
-        <activity android:name=".ViewVideo"
+        <activity android:name="com.prog2app.play.AudioList" />
+        <activity android:name="com.prog2app.play.ViewVideo"
             android:screenOrientation="landscape"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTask"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
             android:theme="@style/Theme.MaterialComponents.NoActionBar"/>
-        <activity android:name=".VideoList" />
+        <activity android:name="com.prog2app.play.VideoList" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.prog2app.play.MainActivity"
             android:theme="@style/Theme.MaterialComponents.NoActionBar">
 
         </activity>

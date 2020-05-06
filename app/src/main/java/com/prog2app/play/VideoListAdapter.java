@@ -1,8 +1,6 @@
-package com.example.videoaudioplayer;
+package com.prog2app.play;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;

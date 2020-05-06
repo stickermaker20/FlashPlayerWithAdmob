@@ -1,17 +1,15 @@
-package com.example.videoaudioplayer;
+package com.prog2app.play;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 //import wseemann.media.FFmpegMediaMetadataRetriever;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.widget.Toast;
 
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
 import com.google.android.gms.ads.AdListener;
@@ -22,7 +20,6 @@ import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 
 public class VideoList extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -81,8 +78,8 @@ public class VideoList extends AppCompatActivity {
         nativeAd();
     }
     private  void nativeAd(){
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
-        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
+        MobileAds.initialize(this, "ca-app-pub-2758711540829766~2235587113");
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-2758711540829766/2923705024")
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
@@ -97,7 +94,7 @@ public class VideoList extends AppCompatActivity {
                     @Override
                     public void onAdFailedToLoad(int errorCode) {
                         // Handle the failure by logging, altering the UI, and so on.
-                        Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .withNativeAdOptions(new NativeAdOptions.Builder()

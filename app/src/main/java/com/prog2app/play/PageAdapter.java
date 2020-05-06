@@ -1,4 +1,4 @@
-package com.example.videoaudioplayer;
+package com.prog2app.play;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

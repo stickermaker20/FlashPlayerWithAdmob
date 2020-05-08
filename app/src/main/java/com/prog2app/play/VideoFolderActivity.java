@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
 import com.google.android.gms.ads.AdListener;
@@ -122,16 +123,19 @@ public class VideoFolderActivity extends AppCompatActivity {
         Intent viewIntent;
         switch (item.getItemId()){
             case R.id.action_more:
-                viewIntent =
-                        new Intent("android.intent.action.VIEW",
-                                Uri.parse("https://play.google.com/store/apps/developer?id=prog2app"));
-                startActivity(viewIntent);
+//                viewIntent =
+//                        new Intent("android.intent.action.VIEW",
+//                                Uri.parse("https://play.google.com/store/apps/developer?id=prog2app"));
+//                startActivity(viewIntent);
+                Toast.makeText(getApplicationContext(), "Coming Soon", Toast.LENGTH_SHORT).show();
+
                 break;
             case R.id.action_rate:
-                viewIntent =
-                        new Intent("android.intent.action.VIEW",
-                                Uri.parse("https://play.google.com/store/apps/developer?id=prog2app"));
-                startActivity(viewIntent);
+//                viewIntent =
+//                        new Intent("android.intent.action.VIEW",
+//                                Uri.parse("https://play.google.com/store/apps/developer?id=prog2app"));
+//                startActivity(viewIntent);
+                Toast.makeText(getApplicationContext(), "Coming Soon", Toast.LENGTH_SHORT).show();
 
                 break;
         }

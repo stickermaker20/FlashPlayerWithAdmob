@@ -3,16 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@drawable/custom_ripple"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
+    android:gravity="center_horizontal"
     android:layout_height="wrap_content"
     android:id="@+id/relativeLayout"
-    android:padding="15dp">
+    android:padding="13dp">
     <androidx.cardview.widget.CardView
-        android:layout_width="100dp"
+        android:layout_width="250dp"
         app:cardCornerRadius="6dp"
+        android:layout_centerHorizontal="true"
         app:cardElevation="5dp"
         android:id="@+id/cardView"
-        android:layout_height="60dp">
+        android:layout_height="110dp">
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -42,12 +44,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/videoName"
+        android:layout_centerHorizontal="true"
         android:text="VLC-23HFK7X"
         android:textSize="17dp"
         android:textColor="#212121"
-        android:layout_toRightOf="@+id/cardView"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="15dp"></TextView>
+        android:layout_below="@+id/cardView"
+        android:layout_marginTop="10dp"></TextView>
 
 
 </RelativeLayout>

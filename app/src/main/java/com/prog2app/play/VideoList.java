@@ -1,15 +1,23 @@
 package com.prog2app.play;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 //import wseemann.media.FFmpegMediaMetadataRetriever;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.ArrayMap;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
 import com.google.android.gms.ads.AdListener;
@@ -26,8 +34,12 @@ public class VideoList extends AppCompatActivity {
     ArrayList<String> videosUri = new ArrayList<>();
     ArrayList<String> videosTitle= new ArrayList<>();
     ArrayList<String> videosDuration= new ArrayList<>();
+    boolean linearLayout;
+    VideoListAdapter videoListAdapter=new VideoListAdapter();
+    private Menu menu;
     //new lib for duration
-    MediaMetadataRetriever mMediaMetadataRetriever = new MediaMetadataRetriever();
+    ColumnIndexCache cache = new ColumnIndexCache();
+    MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 
 
     @Override
@@ -38,6 +50,8 @@ public class VideoList extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         String folderName=getIntent().getStringExtra("FolderName");
         setTitle(folderName);
+        SharedPreferences prefs = getSharedPreferences("Log", MODE_PRIVATE);
+        linearLayout = prefs.getBoolean("videosLinearLayout", true);
         fetchVideos(folderName);
 
 
@@ -47,11 +61,11 @@ public class VideoList extends AppCompatActivity {
     }
     private void fetchVideos(String folderName) {
         Uri uri;
-        int column_index_data,title;//thum,duration;
-        String mVideoDuration;
+        int column_index_data,title;
+        String duration;
         Cursor cursor;
         uri=MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-        String[] projection={MediaStore.MediaColumns.DATA, MediaStore.Video.VideoColumns.DURATION, MediaStore.Video.Media.DISPLAY_NAME, MediaStore.Video.Media._ID, MediaStore.Video.Thumbnails.DATA};
+        String[] projection={MediaStore.MediaColumns.DATA, MediaStore.Video.Media.DISPLAY_NAME, MediaStore.Video.Media.DURATION};
         String orderBy=MediaStore.Images.Media.DATE_TAKEN;
 
         //testing
@@ -60,21 +74,30 @@ public class VideoList extends AppCompatActivity {
         cursor=getApplicationContext().getContentResolver().query(uri,projection,selection,selectedFolder,orderBy+" DESC");
         //testing
 
-        column_index_data=cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        title=cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
-        //duration=cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
-        //thum=cursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA);
+        column_index_data=cache.getColumnIndex(cursor,MediaStore.MediaColumns.DATA);
+        title=cache.getColumnIndex(cursor,MediaStore.Video.Media.DISPLAY_NAME);
+
         while (cursor.moveToNext()){
             videosUri.add(cursor.getString(column_index_data));
-            //videosThumb.add(cursor.getString(thum));
             videosTitle.add(cursor.getString(title));
-            //new code for duration
-            mMediaMetadataRetriever.setDataSource(cursor.getString(column_index_data));
-            mVideoDuration = mMediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            videosDuration.add(mVideoDuration);
+            duration=cursor.getString(cache.getColumnIndex(cursor,MediaStore.Video.Media.DURATION));
+            if(duration==null){
+                retriever.setDataSource(cursor.getString(column_index_data));
+                duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                videosDuration.add(duration);
+            }else {
+                videosDuration.add(duration);
+            }
+
 
         }
-        recyclerView.setAdapter(new VideoListAdapter(videosUri,videosTitle,videosDuration,VideoList.this));
+// Clear the cache after you're done
+        cache.clear();
+        retriever.release();
+
+//        recyclerView.setAdapter(new VideoListAdapter(videosUri,videosTitle,videosDuration,VideoList.this));
+        videoListAdapter.setValues(videosUri,videosTitle,videosDuration,VideoList.this);
+        checkLayout();
         nativeAd();
     }
     private  void nativeAd(){
@@ -87,7 +110,9 @@ public class VideoList extends AppCompatActivity {
                         NativeTemplateStyle styles = new
                                 NativeTemplateStyle.Builder().build();
                         addingAdsItems();
-                        recyclerView.setAdapter(new VideoListAdapter(videosUri,videosTitle,videosDuration,VideoList.this,styles,unifiedNativeAd));
+//                        recyclerView.setAdapter(new VideoListAdapter(videosUri,videosTitle,videosDuration,VideoList.this,styles,unifiedNativeAd));
+                        videoListAdapter.setValues(videosUri,videosTitle,videosDuration,VideoList.this,styles,unifiedNativeAd);
+                        recyclerView.setAdapter(videoListAdapter);
                     }
                 })
                 .withAdListener(new AdListener() {
@@ -105,22 +130,95 @@ public class VideoList extends AppCompatActivity {
         adLoader.loadAd(new AdRequest.Builder().build());
     }
     private void addingAdsItems() {
-        if(videosTitle.size()<=5){
+        if(videosTitle.size()<=4){
             videosTitle.add("native add");
             videosUri.add("native add");
             videosDuration.add("native add");
         }else{
-            videosTitle.add(5,"native add");
-            videosUri.add(5,"native add");
-            videosDuration.add(5,"native add");
+            videosTitle.add(4,"native add");
+            videosUri.add(4,"native add");
+            videosDuration.add(4,"native add");
             for(int i=0;i<videosTitle.size();i++){
-                if(i==14 || i == 23 || i == 32 || i == 41 || i == 50) {
+                if(i==13 || i == 22 || i == 31 || i == 40 || i == 49) {
                     videosTitle.add(i,"banner add");
                     videosUri.add(i,"banner add");
                     videosDuration.add(i,"banner add");
                 }
             }
         }
-
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.video_list_toolbar_menu,menu);
+        this.menu=menu;
+        changeLayoutIcon();
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent viewIntent;
+        switch (item.getItemId()){
+            case R.id.folderLayout:
+                checkLayout();
+                changeLayoutIcon();
+                SharedPreferences.Editor editor = getSharedPreferences("Log", MODE_PRIVATE).edit();
+                if (linearLayout) {
+                    editor.putBoolean("videosLinearLayout", false);
+                } else {
+                    editor.putBoolean("videosLinearLayout", true);
+                }
+                editor.commit();
+                break;
+        }
+        return true;
+    }
+    private void changeLayoutIcon() {
+        if(linearLayout){
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_linear_black_24dp));
+        }else{
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_grid_black_24dp));
+        }
+    }
+    public void checkLayout() {
+        videoListAdapter.setLayout(linearLayout);
+        if (linearLayout) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(videoListAdapter);
+
+        } else {
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    switch(videoListAdapter.getItemViewType(position)){
+                        case 0:
+                            return 1;
+                        case 1:
+                            return 2;
+                        case 2:
+                            return 2;
+
+                        default:
+                            return 1;
+
+
+                    }
+                }
+            });
+            recyclerView.setLayoutManager(gridLayoutManager);
+            recyclerView.setAdapter(videoListAdapter);
+        }
+        linearLayout=!linearLayout;
+    }
+    public class ColumnIndexCache {
+        private ArrayMap<String, Integer> mMap = new ArrayMap<>();   public int getColumnIndex(Cursor cursor, String columnName) {
+            if (!mMap.containsKey(columnName))
+                mMap.put(columnName, cursor.getColumnIndex(columnName));
+            return mMap.get(columnName);
+        }   public void clear() {
+            mMap.clear();
+        }
+    }
+
 }

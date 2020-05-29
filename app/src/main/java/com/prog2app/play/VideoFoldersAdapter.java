@@ -17,22 +17,24 @@ import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapter.ViewHolder> {
     ArrayList <String> folderName;
     ArrayList <Integer> totalVideo;
     Activity activity;
+    boolean linearLayout;
     NativeTemplateStyle styles;
     UnifiedNativeAd unifiedNativeAd;
 
 
-    public VideoFoldersAdapter(ArrayList<String> folderName,ArrayList<Integer> totalVideo, Activity activity){
+    public void setValues(ArrayList<String> folderName,ArrayList<Integer> totalVideo, Activity activity){
         this.folderName=folderName;
         this.totalVideo=totalVideo;
         this.activity=activity;
     }
 
-    public VideoFoldersAdapter(ArrayList<String> folderName, ArrayList<Integer> totalVideo, VideoFolderActivity activity, NativeTemplateStyle styles, UnifiedNativeAd unifiedNativeAd) {
+    public void setValues(ArrayList<String> folderName, ArrayList<Integer> totalVideo, VideoFolderActivity activity, NativeTemplateStyle styles, UnifiedNativeAd unifiedNativeAd) {
         this.folderName=folderName;
         this.totalVideo=totalVideo;
         this.activity=activity;
@@ -49,7 +51,7 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
             return new NativeAdViewHolder(view);
 
         }else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_folders_items, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(linearLayout? R.layout.video_folders_items : R.layout.grid_video_folders_items , parent, false);
             return new ViewHolder(view);
         }
     }
@@ -63,7 +65,12 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
 
         } else {
             if(position>5 && styles !=null){
-                holder.folderName.setText(folderName.get(position-1));
+                if(!linearLayout){
+                    StringTokenizer tokens = new StringTokenizer(folderName.get(position-1), " ");
+                    holder.folderName.setText(tokens.nextToken());
+                }else{
+                    holder.folderName.setText(folderName.get(position-1));
+                }
                 holder.totalVideo.setText(totalVideo.get(position-1) + " Videos");
                 holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
                     @SuppressLint("ResourceType")
@@ -77,7 +84,12 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
                     }
                 });
             }else{
-                holder.folderName.setText(folderName.get(position));
+                if(!linearLayout){
+                    StringTokenizer tokens = new StringTokenizer(folderName.get(position), " ");
+                    holder.folderName.setText(tokens.nextToken());
+                }else{
+                    holder.folderName.setText(folderName.get(position));
+                }
                 holder.totalVideo.setText(totalVideo.get(position) + " Videos");
                 holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
                     @SuppressLint("ResourceType")
@@ -118,7 +130,7 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
 
             }
             else {
-                if (position == 5) {
+                if (position == 4) {
                     return 1;
                 }
                 else {
@@ -146,5 +158,9 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
             super(itemView);
             template = itemView.findViewById(R.id.my_template);
         }
+
+    }
+    public void setLayout(boolean newValue){
+        linearLayout=newValue;
     }
 }

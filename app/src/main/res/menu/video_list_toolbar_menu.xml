@@ -8,15 +8,5 @@
         android:icon="@drawable/ic_linear_black_24dp"
         android:title="Layout Type"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_more"
-        android:orderInCategory="100"
-        android:title="More Apps"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_rate"
-        android:orderInCategory="100"
-        android:title="Rate Us"
-        app:showAsAction="never" />
 </menu>
 

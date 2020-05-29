@@ -67,7 +67,7 @@ public class VideoFolderFragment extends Fragment {
         ArrayList<String> singleFolderName=new ArrayList<>(hashSet);
 
         videocount(singleFolderName);
-        recyclerView.setAdapter(new VideoFoldersAdapter(singleFolderName,totalVideos,getActivity()));
+//        recyclerView.setAdapter(new VideoFoldersAdapter(singleFolderName,totalVideos,getActivity()));
     }
 
     public void videocount(ArrayList<String> singleFolderName){

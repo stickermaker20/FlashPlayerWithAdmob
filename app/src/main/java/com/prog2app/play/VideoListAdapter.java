@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
 import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdRequest;
@@ -21,17 +23,19 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.ViewHolder> {
     ArrayList<String> videosUri;
     ArrayList<String> videosTitle;
     ArrayList<String> videosDuration;
-    Bitmap bmThumbnail;
+    boolean linearLayout;
     Activity activity;
     NativeTemplateStyle styles;
     UnifiedNativeAd unifiedNativeAd;
-    public VideoListAdapter(ArrayList<String> videosUri, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Activity activity) {
+
+    public void setValues(ArrayList<String> videosUri, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Activity activity) {
         this.videosUri=videosUri;
         this.videosTitle=videosTitle;
         this.videosDuration=videosDuration;
@@ -39,7 +43,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
 
     }
 
-    public VideoListAdapter(ArrayList<String> videosUri, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Activity activity, NativeTemplateStyle styles, UnifiedNativeAd unifiedNativeAd) {
+    public void setValues(ArrayList<String> videosUri, ArrayList<String> videosTitle, ArrayList<String> videosDuration, Activity activity, NativeTemplateStyle styles, UnifiedNativeAd unifiedNativeAd) {
         this.videosUri=videosUri;
         this.videosTitle=videosTitle;
         this.videosDuration=videosDuration;
@@ -60,7 +64,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.banner_ad_layout, parent, false);
             return new BannerAdViewHolder(view);
         } else {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_list_item, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(linearLayout? R.layout.video_list_item: R.layout.grid_video_list_items, parent, false);
             return new ViewHolder(view);
         }
     }
@@ -76,12 +80,10 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
             BannerAdViewHolder banner_new_holder = (BannerAdViewHolder) holder;
             banner_new_holder.mAdView.loadAd(new AdRequest.Builder().build());
         } else {
+            try{
                 holder.videoName.setText(videosTitle.get(position));
-                holder.videoDescription.setText(getTimeString(Integer.parseInt(videosDuration.get(position))));
-
-                bmThumbnail = ThumbnailUtils.createVideoThumbnail(videosUri.get(position), MediaStore.Video.Thumbnails.MICRO_KIND);
-                bmThumbnail = ThumbnailUtils.extractThumbnail(bmThumbnail, 970, 580);
-                holder.imageView.setImageBitmap(bmThumbnail);
+                Glide.with(activity).asBitmap().load(Uri.fromFile(new File(videosUri.get(position))))
+                        .centerCrop().into(holder.imageView);
                 holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -97,6 +99,8 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
                         activity.startActivity(intent);
                     }
                 });
+                holder.videoDescription.setText(getTimeString(Integer.parseInt(videosDuration.get(position))));
+            }catch (Exception e){}
         }
     }
 
@@ -117,9 +121,9 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
 
             }
             else {
-                if (position == 5) {
+                if (position == 4) {
                     return 1;
-                } else if(position==14 || position == 23 || position == 32 || position == 41 || position == 50){
+                } else if(position==13 || position == 22 || position == 31 || position == 40 || position == 49){
                     return 2;
                 }
                 else {
@@ -182,4 +186,8 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
             mAdView = itemView.findViewById(R.id.adView);
         }
     }
+    public void setLayout(boolean newValue){
+        linearLayout=newValue;
+    }
+
 }

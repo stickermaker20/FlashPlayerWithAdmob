@@ -838,7 +838,7 @@ public class ViewVideo extends AppCompatActivity{
                     }
                 }
             } else {
-                if (position==5 || position == 14 || position == 23 || position == 32 || position == 41 || position == 50) {
+                if (position==4 || position==13 || position == 22 || position == 31 || position == 40 || position == 49) {
                     if(sign.equals("minus")) {
                         position = position - 1;
                     }else{

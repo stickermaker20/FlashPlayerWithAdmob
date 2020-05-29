@@ -3,17 +3,21 @@ package com.prog2app.play;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.ArrayMap;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -35,7 +39,10 @@ public class VideoFolderActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<String> folderName= new ArrayList<>();
     ArrayList<Integer> totalVideos= new ArrayList<>();
-
+    boolean linearLayout;
+    VideoFoldersAdapter videoFoldersAdapter=new VideoFoldersAdapter();
+    private Menu menu;
+    ColumnIndexCache cache = new ColumnIndexCache();
 
 
     @Override
@@ -56,43 +63,41 @@ public class VideoFolderActivity extends AppCompatActivity {
             }
         });
 
+        SharedPreferences prefs = getSharedPreferences("Log", MODE_PRIVATE);
+        linearLayout = prefs.getBoolean("foldersLinearLayout", true);
         recyclerView=(RecyclerView) findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         fetchVideoFolders();
     }
 
     private void fetchVideoFolders() {
         Uri uri;
 
-        int column_index_data,thum,title,folderNameInt;
-        Cursor cursor,checkCursor;
-        String absolutePathImage=null;
+        int folderNameInt;
+        Cursor cursor;
         uri= MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
         String[] projection={MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,MediaStore.MediaColumns.DATA, MediaStore.Video.Media.DISPLAY_NAME, MediaStore.Video.Media._ID, MediaStore.Video.Thumbnails.DATA};
         String orderBy=MediaStore.Images.Media.DATE_TAKEN;
 
-        //testing
-//        String selection=MediaStore.Video.Media.DATA +" like?";
-//        String[] selectedFolder=new String[]{"%Movies%"};
         cursor=getApplicationContext().getContentResolver().query(uri,projection,null,null,orderBy+" DESC");
 
-        folderNameInt=cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
+        folderNameInt=cache.getColumnIndex(cursor,MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
 
-//        column_index_data=cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-//        title=cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
-//        thum=cursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA);
         while (cursor.moveToNext()){
             folderName.add(cursor.getString(folderNameInt));
-//            videoThum.add(cursor.getString(thum));
-//            videoTitle.add(cursor.getString(title));
-
         }
+// Clear the cache after you're done
+        cache.clear();
+
+
 
         LinkedHashSet<String> hashSet=new LinkedHashSet<>(folderName);
-        ArrayList<String> singleFolderName=new ArrayList<>(hashSet);
-
+        final ArrayList<String> singleFolderName=new ArrayList<>(hashSet);
         videocount(singleFolderName);
-        recyclerView.setAdapter(new VideoFoldersAdapter(singleFolderName,totalVideos,VideoFolderActivity.this));
+
+
+//        recyclerView.setAdapter(new VideoFoldersAdapter(singleFolderName,totalVideos,VideoFolderActivity.this));
+        videoFoldersAdapter.setValues(singleFolderName,totalVideos,VideoFolderActivity.this);
+        checkLayout();
         nativeAd(singleFolderName);
     }
 
@@ -112,35 +117,6 @@ public class VideoFolderActivity extends AppCompatActivity {
             }
             totalVideos.add(count);
         }}
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Intent viewIntent;
-        switch (item.getItemId()){
-            case R.id.action_more:
-//                viewIntent =
-//                        new Intent("android.intent.action.VIEW",
-//                                Uri.parse("https://play.google.com/store/apps/developer?id=prog2app"));
-//                startActivity(viewIntent);
-                Toast.makeText(getApplicationContext(), "Coming Soon", Toast.LENGTH_SHORT).show();
-
-                break;
-            case R.id.action_rate:
-//                viewIntent =
-//                        new Intent("android.intent.action.VIEW",
-//                                Uri.parse("https://play.google.com/store/apps/developer?id=prog2app"));
-//                startActivity(viewIntent);
-                Toast.makeText(getApplicationContext(), "Coming Soon", Toast.LENGTH_SHORT).show();
-
-                break;
-        }
-        return true;
-    }
 
     private  void nativeAd(final ArrayList<String> singleFolderName){
         MobileAds.initialize(this, "ca-app-pub-2758711540829766~2235587113");
@@ -151,7 +127,9 @@ public class VideoFolderActivity extends AppCompatActivity {
                         // Show the ad.
                         NativeTemplateStyle styles = new
                                 NativeTemplateStyle.Builder().build();
-                        recyclerView.setAdapter(new VideoFoldersAdapter(singleFolderName,totalVideos,VideoFolderActivity.this,styles,unifiedNativeAd));
+//                        recyclerView.setAdapter(new VideoFoldersAdapter(singleFolderName,totalVideos,VideoFolderActivity.this,styles,unifiedNativeAd));
+                        videoFoldersAdapter.setValues(singleFolderName,totalVideos,VideoFolderActivity.this,styles,unifiedNativeAd);
+                        recyclerView.setAdapter(videoFoldersAdapter);
                     }
                 })
                 .withAdListener(new AdListener() {
@@ -169,5 +147,91 @@ public class VideoFolderActivity extends AppCompatActivity {
         adLoader.loadAd(new AdRequest.Builder().build());
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        this.menu=menu;
+        changeLayoutIcon();
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent viewIntent;
+        switch (item.getItemId()){
+            case R.id.action_more:
+                viewIntent =
+                        new Intent("android.intent.action.VIEW",
+                                Uri.parse("https://play.google.com/store/apps/developer?id=prog2app"));
+                startActivity(viewIntent);
+                break;
+            case R.id.action_rate:
+                viewIntent =
+                        new Intent("android.intent.action.VIEW",
+                                Uri.parse("https://play.google.com/store/apps/details?id=com.prog2app.play&hl=en"));
+                startActivity(viewIntent);
+
+                break;
+            case R.id.folderLayout:
+                checkLayout();
+                changeLayoutIcon();
+                SharedPreferences.Editor editor = getSharedPreferences("Log", MODE_PRIVATE).edit();
+
+                if (linearLayout) {
+                    editor.putBoolean("foldersLinearLayout", false);
+                } else {
+                    editor.putBoolean("foldersLinearLayout", true);
+                }
+                editor.commit();
+                break;
+        }
+        return true;
+    }
+
+    private void changeLayoutIcon() {
+        if(linearLayout){
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_linear_black_24dp));
+        }else{
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_grid_black_24dp));
+        }
+    }
+
+    public void checkLayout() {
+        videoFoldersAdapter.setLayout(linearLayout);
+        if (linearLayout) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(videoFoldersAdapter);
+        } else {
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4);
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    switch(videoFoldersAdapter.getItemViewType(position)){
+                        case 0:
+                            return 1;
+                        case 1:
+                            return 4;
+
+                        default:
+                            return 1;
+
+
+                    }
+                }
+            });
+            recyclerView.setLayoutManager(gridLayoutManager);
+            recyclerView.setAdapter(videoFoldersAdapter);
+        }
+        linearLayout=!linearLayout;
+    }
+    public class ColumnIndexCache {
+        private ArrayMap<String, Integer> mMap = new ArrayMap<>();   public int getColumnIndex(Cursor cursor, String columnName) {
+            if (!mMap.containsKey(columnName))
+                mMap.put(columnName, cursor.getColumnIndex(columnName));
+            return mMap.get(columnName);
+        }   public void clear() {
+            mMap.clear();
+        }
+    }
 
 }

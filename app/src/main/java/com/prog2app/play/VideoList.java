@@ -50,6 +50,7 @@ public class VideoList extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         String folderName=getIntent().getStringExtra("FolderName");
         setTitle(folderName);
+        videoListAdapter.setFolderName(folderName);
         SharedPreferences prefs = getSharedPreferences("Log", MODE_PRIVATE);
         linearLayout = prefs.getBoolean("videosLinearLayout", true);
         fetchVideos(folderName);

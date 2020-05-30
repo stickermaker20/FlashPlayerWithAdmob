@@ -45,6 +45,8 @@ public class VideoFolderActivity extends AppCompatActivity {
     ColumnIndexCache cache = new ColumnIndexCache();
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -185,6 +187,11 @@ public class VideoFolderActivity extends AppCompatActivity {
                 }
                 editor.commit();
                 break;
+            case R.id.refresh:
+                Toast.makeText(getApplicationContext(),"List Updated Successfully",Toast.LENGTH_LONG).show();
+              recreate();
+                break;
+
         }
         return true;
     }

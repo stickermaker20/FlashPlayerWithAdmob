@@ -1,17 +1,25 @@
 package com.prog2app.play;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
@@ -21,6 +29,8 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
@@ -31,6 +41,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     ArrayList<String> videosTitle;
     ArrayList<String> videosDuration;
     boolean linearLayout;
+    String folderName;
     Activity activity;
     NativeTemplateStyle styles;
     UnifiedNativeAd unifiedNativeAd;
@@ -70,7 +81,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         if (getItemViewType(position) == 1) {
                 NativeAdViewHolder new_holder = (NativeAdViewHolder) holder;
                 new_holder.template.setStyles(styles);
@@ -97,6 +108,55 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
                             intent.putExtra("AdsLoaded", "No");
                         }
                         activity.startActivity(intent);
+                    }
+                });
+                holder.moreOptions.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        PopupMenu popup = new PopupMenu(activity, holder.moreOptions);
+                        //inflating menu from xml resource
+                        popup.inflate(R.menu.video_list_item_menu);
+                        //adding click listener
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+
+                                int id = item.getItemId();
+                                switch (id) {
+                                    case R.id.delete: {
+                                        try {
+
+                                            deleteVideo(videosUri.get(position));
+                                            recreateActivity();
+                                            notifyDataSetChanged();
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        break;
+                                    }
+                                    case R.id.share:{
+                                        File videoFile = new File(videosUri.get(position));
+                                        Uri videoURI = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                                                ? FileProvider.getUriForFile(activity, activity.getPackageName(), videoFile)
+                                                : Uri.fromFile(videoFile);
+                                        ShareCompat.IntentBuilder.from(activity)
+                                                .setStream(videoURI)
+                                                .setType("video/mp4")
+                                                .setChooserTitle("Share video...")
+                                                .startChooser();
+                                        break;
+                                    }
+
+                                    default:{
+                                        Log.e("default","its default ..");
+                                    }
+                                }
+                                return  true;
+                            }
+                        });
+                        //displaying the popup
+                        popup.show();
                     }
                 });
                 holder.videoDescription.setText(getTimeString(Integer.parseInt(videosDuration.get(position))));
@@ -136,7 +196,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        ImageView imageView,moreOptions;
         RelativeLayout relativeLayout;
         TextView videoName,videoDescription;
         public ViewHolder(@NonNull View itemView) {
@@ -144,6 +204,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
             relativeLayout=(RelativeLayout) itemView.findViewById(R.id.relativeLayout);
             imageView=(ImageView) itemView.findViewById(R.id.videoThumbnail);
             videoName=(TextView) itemView.findViewById(R.id.videoName);
+            moreOptions=(ImageView) itemView.findViewById(R.id.moreOptions);
             videoDescription=(TextView) itemView.findViewById(R.id.videoDescription);
         }
     }
@@ -189,5 +250,48 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.View
     public void setLayout(boolean newValue){
         linearLayout=newValue;
     }
+    public void deleteVideo(String mFilePath){
+        File file = new File(mFilePath);
+        if (file.exists()) {
+            if (file.delete()) {
+                Log.e("-->", "file Deleted :" + mFilePath);
+                callBroadCast();
+            } else {
+                Log.e("-->", "file not Deleted :" + mFilePath);
+            }
+        }
 
+
+        //callBroadCast();
+        callScanItent(activity,mFilePath);
+    }
+    public void callBroadCast() {
+        if (Build.VERSION.SDK_INT >= 14) {
+            Log.e("-->", " >= 14");
+            MediaScannerConnection.scanFile(activity, new String[]{Environment.getExternalStorageDirectory().toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                /*
+                 *   (non-Javadoc)
+                 * @see android.media.MediaScannerConnection.OnScanCompletedListener#onScanCompleted(java.lang.String, android.net.Uri)
+                 */
+                public void onScanCompleted(String path, Uri uri) {
+                    Log.e("ExternalStorage", "Scanned " + path + ":");
+                    Log.e("ExternalStorage", "-> uri=" + uri);
+                }
+            });
+        }
+    }
+    public void callScanItent(Context context, String path) {
+        MediaScannerConnection.scanFile(context,
+                new String[] { path }, null,null);
+    }
+    public void recreateActivity(){
+        activity.finish();
+        Intent intent = new Intent(activity, VideoList.class);
+        intent.putExtra("FolderName", folderName);
+        Toast.makeText(activity,"Video Deleted Successfully",Toast.LENGTH_LONG).show();
+        activity.startActivity(intent);
+    }
+    public void setFolderName(String name){
+        folderName=name;
+    }
 }

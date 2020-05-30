@@ -107,8 +107,11 @@ public class ViewVideo extends AppCompatActivity{
             textSeekbar.setText(videoCurrentTime);
 
             leftTime.setText(videoTotalTime);
+            if(videoView.isPlaying()){
+                template.setVisibility(View.GONE);
+            }
 //            if(videoCurrentTime.equals(videoTotalTime)){
-//                if(!clickPlayPause) {
+////                if(!clickPlayPause) {
 //                    play.setVisibility(View.VISIBLE);
 //                    pause.setVisibility(View.GONE);
 //                }
@@ -292,6 +295,7 @@ public class ViewVideo extends AppCompatActivity{
         previous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                template.setVisibility(View.GONE);
                 position=position-1;
                 if(position<0){
                     position=videoUri.size()-1;
@@ -310,6 +314,7 @@ public class ViewVideo extends AppCompatActivity{
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                template.setVisibility(View.GONE);
                 position=position+1;
                positionAdjustment("plus");
                 if(position>(videoUri.size()-1)){
@@ -796,10 +801,11 @@ public class ViewVideo extends AppCompatActivity{
     private void interstitialAd(){
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-2758711540829766/2283209648");
-
+        //interstitial test ad id = ca-app-pub-3940256099942544/1033173712
     }
     private  void nativeAd(){
         MobileAds.initialize(this, "ca-app-pub-2758711540829766~2235587113");
+        //native test ad id = ca-app-pub-3940256099942544/2247696110
         AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-2758711540829766/2923705024")
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override

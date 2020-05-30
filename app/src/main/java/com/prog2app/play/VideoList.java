@@ -102,6 +102,7 @@ public class VideoList extends AppCompatActivity {
     }
     private  void nativeAd(){
         MobileAds.initialize(this, "ca-app-pub-2758711540829766~2235587113");
+        //native test ad id = ca-app-pub-3940256099942544/2247696110
         AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-2758711540829766/2923705024")
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override

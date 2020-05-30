@@ -10,7 +10,8 @@
         android:layout_centerHorizontal="true"
         ads:adSize="BANNER"
         ads:adUnitId="ca-app-pub-2758711540829766/6097782831">
-        <!--        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">-->
     </com.google.android.gms.ads.AdView>
 </LinearLayout>
+
+<!--  banner ad test id =  ca-app-pub-3940256099942544/6300978111-->
 

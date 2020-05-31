@@ -33,6 +33,8 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
 
 public class VideoFolderActivity extends AppCompatActivity {
@@ -77,10 +79,10 @@ public class VideoFolderActivity extends AppCompatActivity {
         int folderNameInt;
         Cursor cursor;
         uri= MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-        String[] projection={MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,MediaStore.MediaColumns.DATA, MediaStore.Video.Media.DISPLAY_NAME, MediaStore.Video.Media._ID, MediaStore.Video.Thumbnails.DATA};
-        String orderBy=MediaStore.Images.Media.DATE_TAKEN;
+        String[] projection={"DISTINCT " + MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,MediaStore.MediaColumns.BUCKET_ID};
+//        String orderBy=MediaStore.Images.Media.DATE_TAKEN +" DESC";
 
-        cursor=getApplicationContext().getContentResolver().query(uri,projection,null,null,orderBy+" DESC");
+        cursor=getApplicationContext().getContentResolver().query(uri,projection,null,null,null);
 
         folderNameInt=cache.getColumnIndex(cursor,MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
 
@@ -92,15 +94,22 @@ public class VideoFolderActivity extends AppCompatActivity {
 
 
 
-        LinkedHashSet<String> hashSet=new LinkedHashSet<>(folderName);
-        final ArrayList<String> singleFolderName=new ArrayList<>(hashSet);
-        videocount(singleFolderName);
+//        LinkedHashSet<String> hashSet=new LinkedHashSet<>(folderName);
+//        final ArrayList<String> singleFolderName=new ArrayList<>(hashSet);
+
+        //sort foldernames alphabetical
+        Collections.sort(folderName, new Comparator<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+                return s1.compareToIgnoreCase(s2);
+            }
+        });
+        videocount(folderName);
 
 
-//        recyclerView.setAdapter(new VideoFoldersAdapter(singleFolderName,totalVideos,VideoFolderActivity.this));
-        videoFoldersAdapter.setValues(singleFolderName,totalVideos,VideoFolderActivity.this);
+     videoFoldersAdapter.setValues(folderName,totalVideos,VideoFolderActivity.this);
         checkLayout();
-        nativeAd(singleFolderName);
+        nativeAd(folderName);
     }
 
     public void videocount(ArrayList<String> singleFolderName){

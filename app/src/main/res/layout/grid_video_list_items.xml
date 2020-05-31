@@ -48,6 +48,8 @@
         android:text="VLC-23HFK7X"
         android:textSize="17dp"
         android:textColor="#212121"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/moreOptions"
         android:layout_below="@+id/cardView"
         android:layout_marginTop="10dp"></TextView>
     <ImageView

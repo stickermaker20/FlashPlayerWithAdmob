@@ -64,7 +64,7 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
                         new_holder.template.setNativeAd(unifiedNativeAd);
 
         } else {
-            if(position>5 && styles !=null){
+            if(position>4 && styles !=null){
                 if(!linearLayout){
                     StringTokenizer tokens = new StringTokenizer(folderName.get(position-1), " ");
                     holder.folderName.setText(tokens.nextToken());
@@ -121,7 +121,7 @@ public class VideoFoldersAdapter extends RecyclerView.Adapter<VideoFoldersAdapte
     @Override
     public int getItemViewType(int position) {
         if (styles !=null) {
-            if (folderName.size() <= 5) {
+            if (folderName.size() <= 4) {
                 if (position == folderName.size()) {
                     return 1;
                 } else {

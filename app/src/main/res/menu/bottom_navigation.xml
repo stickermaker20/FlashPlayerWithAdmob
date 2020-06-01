@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id='@+id/video_activity'
+        android:icon="@drawable/ic_video_call_black_24dp"
+        android:title="Video" />
+    <item
+        android:id="@+id/audio_activity"
+        android:title="Audio"
+        android:icon="@drawable/ic_queue_music_black_24dp"/>
+    <item
+        android:id="@+id/other_activity"
+        android:title="Other"
+        android:icon="@drawable/ic_queue_music_black_24dp"/>
+
+
+</menu>

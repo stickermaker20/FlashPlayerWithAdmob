@@ -8,11 +8,7 @@
         android:icon="@drawable/ic_linear_black_24dp"
         android:title="Layout Type"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/refresh"
-        android:orderInCategory="100"
-        android:title="Refresh List"
-        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_more"
         android:orderInCategory="100"
@@ -23,5 +19,6 @@
         android:orderInCategory="100"
         android:title="Rate Us"
         app:showAsAction="never" />
+
 </menu>
 

@@ -12,40 +12,37 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <provider
-            android:authorities="com.prog2app.play"
-            android:name="androidx.core.content.FileProvider"
-            android:grantUriPermissions="true"
-            android:exported="false">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_path"></meta-data>
-        </provider>
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2758711540829766~2235587113"/>
-
-        <activity android:name="com.prog2app.play.VideoFolderActivity">
+        <activity android:name=".AudioVideoList"></activity>
+        <activity android:name=".AudioVideoFolders">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.prog2app.play.AudioList" />
-        <activity android:name="com.prog2app.play.ViewVideo"
-            android:screenOrientation="landscape"
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.prog2app.play"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_path" />
+        </provider>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2758711540829766~2235587113" />
+
+        <activity
+            android:name=".ViewVideo"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTask"
             android:resizeableActivity="true"
+            android:screenOrientation="landscape"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.MaterialComponents.NoActionBar"/>
-        <activity android:name="com.prog2app.play.VideoList" />
-        <activity
-            android:name="com.prog2app.play.MainActivity"
-            android:theme="@style/Theme.MaterialComponents.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.MaterialComponents.NoActionBar" />
     </application>
 
 </manifest>

@@ -1,16 +1,26 @@
 package com.prog2app.play;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.app.PictureInPictureParams;
+import android.content.ContentUris;
 import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Rational;
@@ -26,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
 import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.AdListener;
@@ -39,6 +50,8 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.cast.TextTrackStyle;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ViewVideo extends AppCompatActivity{
@@ -50,7 +63,9 @@ public class ViewVideo extends AppCompatActivity{
     TextView videoTitleText,currentTime,leftTime,screenSizeText,textVolume,textBrightness,textSeekbar,textPlayPause;
     ArrayList<String> videoUri;
     ArrayList<String> videoTitle;
+    ImageView audioBackImage,audioFrontImage;
     int position;
+    String listType;
     RelativeLayout mainLayout;
     FrameLayout topFrameLayout,bottomFrameLayout;
     boolean framesVisibility=false;
@@ -177,6 +192,8 @@ public class ViewVideo extends AppCompatActivity{
         previous=(ImageView) findViewById(R.id.previous);
         next=(ImageView) findViewById(R.id.next);
         play=(ImageView)findViewById(R.id.play);
+        audioBackImage=(ImageView)findViewById(R.id.audioBackImage);
+        audioFrontImage=(ImageView)findViewById(R.id.audioFrontImage);
         textSeekbar=(TextView) findViewById(R.id.textseekbar);
         textPlayPause=(TextView) findViewById(R.id.textplay);
         pause=(ImageView)findViewById(R.id.pause);
@@ -199,9 +216,12 @@ public class ViewVideo extends AppCompatActivity{
         videoTitle=getIntent().getStringArrayListExtra("VideoTitle");
         position=getIntent().getIntExtra("VideoPosition",0);
         adsLoaded=getIntent().getStringExtra("AdsLoaded");
+        listType=getIntent().getStringExtra("ListType");
         videoTitleText.setText(videoTitle.get(position));
         videoView.setVideoURI(Uri.parse(videoUri.get(position)));
         videoView.start();
+        audioFrontImage.setVisibility(View.GONE);
+        audioBackImage.setVisibility(View.GONE);
         topFrameLayout.setVisibility(View.GONE);
         bottomFrameLayout.setVisibility(View.GONE);
         play.setVisibility(View.GONE);
@@ -219,6 +239,14 @@ public class ViewVideo extends AppCompatActivity{
         mDetector = new GestureDetector(this, new MyGestureListener());
         lastSeekUpdateTime=Long.valueOf(System.currentTimeMillis());
         lastVolumeUpdateTime=Long.valueOf(System.currentTimeMillis());
+        if(listType.equals("audio")){
+            rotateScreen.setVisibility(View.GONE);
+            setRequestedOrientation(1);
+            audioFrontImage.setVisibility(View.VISIBLE);
+            audioBackImage.setVisibility(View.VISIBLE);
+           settingAudioImages(position);
+
+        }
         this.brightbar.setMax(100);
         this.volumebar.setMax(this.audioManager.getStreamMaxVolume(3));
         this.volumebar.setProgress(this.audioManager.getStreamVolume(3));
@@ -304,6 +332,7 @@ public class ViewVideo extends AppCompatActivity{
                 videoTitleText.setText(videoTitle.get(position));
                 videoView.setVideoURI(Uri.parse(videoUri.get(position)));
                 if(!videoView.isPlaying()){
+                    settingAudioImages(position);
                     videoView.start();
                     pause.setVisibility(View.VISIBLE);
                     play.setVisibility(View.GONE);
@@ -323,6 +352,7 @@ public class ViewVideo extends AppCompatActivity{
                 videoTitleText.setText(videoTitle.get(position));
                 videoView.setVideoURI(Uri.parse(videoUri.get(position)));
                 if(!videoView.isPlaying()){
+                    settingAudioImages(position);
                     videoView.start();
                     pause.setVisibility(View.VISIBLE);
                     play.setVisibility(View.GONE);
@@ -339,7 +369,9 @@ public class ViewVideo extends AppCompatActivity{
                 play.setVisibility(View.VISIBLE);
                 topFrameLayout.setVisibility(View.VISIBLE);
                 bottomFrameLayout.setVisibility(View.VISIBLE);
-                rotateScreen.setVisibility(View.VISIBLE);
+                if(!listType.equals("audio")) {
+                    rotateScreen.setVisibility(View.VISIBLE);
+                }
                 framesVisibility=true;
                 nativeAd();
 
@@ -543,6 +575,37 @@ public class ViewVideo extends AppCompatActivity{
 
     }
 
+    private void settingAudioImages(int pos) {
+        Bitmap bitmap = null;
+        Uri imgUri=getAudioAlbumImageContentUri(this,videoUri.get(pos));
+        if(imgUri==null) {
+            Glide.with(this).load(this.getResources().getIdentifier("cover", "drawable", this.getPackageName()))
+                    .centerInside().into(audioFrontImage);
+            try {
+                imgUri=Uri.parse("android.resource://"+getPackageName()+"/drawable/"+R.drawable.cover);
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver() , imgUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Bitmap blurredBitmap = BlurBuilder.blur( this, bitmap);
+
+            audioBackImage.setBackground( new BitmapDrawable( getResources(), blurredBitmap ) );
+        }else {
+            Glide.with(this).asBitmap().load(imgUri)
+                    .centerCrop().into(audioFrontImage);
+
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver() , imgUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Bitmap blurredBitmap = BlurBuilder.blur( this, bitmap);
+
+            audioBackImage.setBackground( new BitmapDrawable( getResources(), blurredBitmap ) );
+        }
+    }
+
     class MyGestureListener extends GestureDetector.SimpleOnGestureListener{
         @Override
         public boolean onDown(MotionEvent event) {
@@ -563,7 +626,9 @@ public class ViewVideo extends AppCompatActivity{
                 }else{
                     topFrameLayout.setVisibility(View.VISIBLE);
                     bottomFrameLayout.setVisibility(View.VISIBLE);
-                    rotateScreen.setVisibility(View.VISIBLE);
+                    if(!listType.equals("audio")) {
+                        rotateScreen.setVisibility(View.VISIBLE);
+                    }
                     framesVisibility=true;
 //                    if(videoView.isPlaying()){
 //                        new Handler().postDelayed(new Runnable() {
@@ -606,7 +671,9 @@ public class ViewVideo extends AppCompatActivity{
                 play.setVisibility(View.VISIBLE);
                 topFrameLayout.setVisibility(View.VISIBLE);
                 bottomFrameLayout.setVisibility(View.VISIBLE);
-                rotateScreen.setVisibility(View.VISIBLE);
+                if(!listType.equals("audio")) {
+                    rotateScreen.setVisibility(View.VISIBLE);
+                }
                 framesVisibility=true;
                 textPlayPause.setText("PAUSE");
                 new Handler().postDelayed(new Runnable() {
@@ -800,13 +867,15 @@ public class ViewVideo extends AppCompatActivity{
     }
     private void interstitialAd(){
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-2758711540829766/2283209648");
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         //interstitial test ad id = ca-app-pub-3940256099942544/1033173712
+        //interstitial ad id= ca-app-pub-2758711540829766/2283209648
     }
     private  void nativeAd(){
         MobileAds.initialize(this, "ca-app-pub-2758711540829766~2235587113");
         //native test ad id = ca-app-pub-3940256099942544/2247696110
-        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-2758711540829766/2923705024")
+        //native ad id=  ca-app-pub-2758711540829766/2923705024
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
@@ -852,6 +921,55 @@ public class ViewVideo extends AppCompatActivity{
                     }
                 }
             }
+        }
+    }
+    public Uri getAudioAlbumImageContentUri(Context context, String filePath) {
+        Uri imgUri = null;
+        Uri audioUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String selection = MediaStore.Audio.Media.DATA + "=? ";
+        String[] projection = new String[] { MediaStore.Audio.Media._ID , MediaStore.Audio.Media.ALBUM_ID};
+
+        Cursor cursor = context.getContentResolver().query(
+                audioUri,
+                projection,
+                selection,
+                new String[] { filePath }, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            long albumId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+            Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
+            imgUri= ContentUris.withAppendedId(sArtworkUri,
+                    albumId);
+
+
+            cursor.close();
+
+        }
+        if(filePath.contains(".ogg"))
+            return null;
+        return imgUri;
+    }
+    public static class BlurBuilder {
+        private static final float BITMAP_SCALE = 0.1f;
+        private static final float BLUR_RADIUS = 9.0f;
+
+        public static Bitmap blur(Context context, Bitmap image) {
+            int width = Math.round(image.getWidth() * BITMAP_SCALE);
+            int height = Math.round(image.getHeight() * BITMAP_SCALE);
+
+            Bitmap inputBitmap = Bitmap.createScaledBitmap(image, width, height, false);
+            Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
+
+            RenderScript rs = RenderScript.create(context);
+            ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+            Allocation tmpIn = Allocation.createFromBitmap(rs, inputBitmap);
+            Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
+            theIntrinsic.setRadius(BLUR_RADIUS);
+            theIntrinsic.setInput(tmpIn);
+            theIntrinsic.forEach(tmpOut);
+            tmpOut.copyTo(outputBitmap);
+
+            return outputBitmap;
         }
     }
 }

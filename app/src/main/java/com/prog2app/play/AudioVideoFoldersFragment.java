@@ -125,8 +125,10 @@ public class AudioVideoFoldersFragment extends Fragment {
 
         }
         folderName=sortFolderNames(folderName);
+        if(folderName.size()>0){
         folderRepeat= Collections.frequency(folderName, folderName.get(0));
         totalAudiosVideos.add(folderRepeat);
+        }
         for(int i=1;i<folderName.size();i++){
             if(!folderName.get(i).equals(folderName.get(i-1)) ){
                 folderRepeat= Collections.frequency(folderName, folderName.get(i));

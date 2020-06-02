@@ -65,25 +65,11 @@ public class AudioVideoFolders extends AppCompatActivity implements BottomNaviga
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Intent viewIntent;
+
         switch (item.getItemId()){
 
-            case R.id.action_more:
-                viewIntent =
-                        new Intent("android.intent.action.VIEW",
-                                Uri.parse("https://play.google.com/store/apps/developer?id=prog2app"));
-                startActivity(viewIntent);
-                break;
-            case R.id.action_rate:
-                viewIntent =
-                        new Intent("android.intent.action.VIEW",
-                                Uri.parse("https://play.google.com/store/apps/details?id=com.prog2app.play&hl=en"));
-                startActivity(viewIntent);
-
-                break;
             case R.id.folderLayout:
                 linearLayout=!linearLayout;
-//                checkLayout();
                 audioVideoFoldersFragment.checkLayout(linearLayout);
                 if(selectedFragment!=null){
                     selectedFragment.checkLayout(linearLayout);
@@ -128,7 +114,8 @@ public class AudioVideoFolders extends AppCompatActivity implements BottomNaviga
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,selectedFragment).commit();
 
         }else if(itemId == R.id.other_fragment){
-            startActivity(new Intent(this,WhatsappVideoList.class));
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,new ExtraFragment()).commit();
+//            startActivity(new Intent(this,WhatsappVideoList.class));
         }
         return true;
     }

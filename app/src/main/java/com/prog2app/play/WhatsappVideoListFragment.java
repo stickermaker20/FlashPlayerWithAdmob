@@ -90,6 +90,8 @@ public class WhatsappVideoListFragment extends Fragment {
     }
         if(audiosVideosUri.size()==0){
             textLayout.setVisibility(View.VISIBLE);
+        }else{
+            textLayout.setVisibility(View.GONE);
         }
         retriever.release();
         audioVideoListAdapter.setValues(audiosVideosUri,audiosVideosTitle,audiosVideosDuration,getActivity());

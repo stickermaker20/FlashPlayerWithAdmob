@@ -48,7 +48,7 @@
                 android:layout_margin="10dp"
                 android:textSize="15dp"
                 android:textColor="#000"
-                android:text="2. Come back here, save the video that you don't want to be deleted"></TextView>
+                android:text="2. Come back here, save the video from seen status that you don't want to be deleted"></TextView>
 
 
         </LinearLayout>

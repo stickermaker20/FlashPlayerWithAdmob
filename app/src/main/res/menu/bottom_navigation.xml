@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id='@+id/video_activity'
+        android:id='@+id/video_fragment'
         android:icon="@drawable/ic_video_call_black_24dp"
         android:title="Video" />
     <item
-        android:id="@+id/audio_activity"
+        android:id="@+id/audio_fragment"
         android:title="Audio"
         android:icon="@drawable/ic_queue_music_black_24dp"/>
     <item
-        android:id="@+id/other_activity"
+        android:id="@+id/other_fragment"
         android:title="Other"
         android:icon="@drawable/ic_queue_music_black_24dp"/>
 

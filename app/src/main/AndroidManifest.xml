@@ -12,7 +12,8 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AudioVideoList"></activity>
+        <activity android:name=".WhatsappVideoList"></activity>
+        <activity android:name=".AudioVideoList" />
         <activity android:name=".AudioVideoFolders">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

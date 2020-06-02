@@ -134,16 +134,21 @@ public class AudioVideoFolders extends AppCompatActivity implements BottomNaviga
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int itemId = menuItem.getItemId();
         Bundle bundle = new Bundle();
-        if (itemId == R.id.audio_activity) {
+        if (itemId == R.id.audio_fragment) {
             bundle.putString("ListType", "audio");
             selectedFragment = new AudioVideoFoldersFragment();
             selectedFragment.setArguments(bundle);
-        } else if (itemId == R.id.video_activity) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,selectedFragment).commit();
+
+        } else if (itemId == R.id.video_fragment) {
             bundle.putString("ListType", "video");
             selectedFragment = new AudioVideoFoldersFragment();
             selectedFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,selectedFragment).commit();
+
+        }else if(itemId == R.id.other_fragment){
+            startActivity(new Intent(this,WhatsappVideoList.class));
         }
-        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,selectedFragment).commit();
         return true;
     }
 }

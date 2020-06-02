@@ -69,7 +69,7 @@ public class AudioVideoFoldersFragment extends Fragment {
     }
     private void fetchVideoFolders() {
         Uri uri= MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-        String[] projection={"DISTINCT " + MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,MediaStore.MediaColumns.BUCKET_ID};
+        String[] projection={MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,MediaStore.MediaColumns.BUCKET_ID};
 
         Cursor cursor=getContext().getContentResolver().query(uri,projection,null,null,null);
 
@@ -81,14 +81,17 @@ public class AudioVideoFoldersFragment extends Fragment {
         // Clear the cache after you're done
         cache.clear();
 
+        LinkedHashSet<String> hashSet=new LinkedHashSet<>(folderName);
+        ArrayList<String> singleFolderName=new ArrayList<>(hashSet);
+
         //sort foldernames alphabetical
-        folderName=sortFolderNames(folderName);
-        countVideos(folderName);
+        singleFolderName=sortFolderNames(singleFolderName);
+        countVideos(singleFolderName);
 
 
-        audioVideoFoldersAdapter.setValues(folderName,totalAudiosVideos,getActivity());
+        audioVideoFoldersAdapter.setValues(singleFolderName,totalAudiosVideos,getActivity());
 
-        nativeAd(folderName);
+        nativeAd(singleFolderName);
     }
 
     private ArrayList<String> sortFolderNames(ArrayList<String> folderName) {

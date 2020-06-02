@@ -32,6 +32,7 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import androidx.annotation.NonNull;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
@@ -237,10 +238,15 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
             save = (ImageView) itemView.findViewById(R.id.save);
             videoName = (TextView) itemView.findViewById(R.id.videoName);
             moreOptions = (ImageView) itemView.findViewById(R.id.moreOptions);
-            if (folderName.equals("Folder for Whatsapp Status Saving") && moreOptions != null) {
+            if (folderName.contains("Status of WhatsApp Play Folder") && moreOptions != null) {
                 moreOptions.setVisibility(View.GONE);
                 videoName.setVisibility(View.GONE);
-                save.setVisibility(View.VISIBLE);
+                if(folderName.equals("Seen Status of WhatsApp Play Folder")) {
+                    save.setVisibility(View.VISIBLE);
+                }else{
+                    moreOptions.setVisibility(View.VISIBLE);
+                    videoName.setVisibility(View.VISIBLE);
+                }
             }
             videoDescription = (TextView) itemView.findViewById(R.id.videoDescription);
         }
@@ -331,12 +337,18 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
     }
 
     public void recreateActivity() {
-        activity.finish();
-        Intent intent = new Intent(activity, AudioVideoList.class);
-        intent.putExtra("FolderName", folderName);
-        intent.putExtra("ListType", listType);
-        Toast.makeText(activity, "Video Deleted Successfully", Toast.LENGTH_LONG).show();
-        activity.startActivity(intent);
+        if(!folderName.contains("Status of WhatsApp Play Folder")) {
+            activity.finish();
+            Intent intent = new Intent(activity, AudioVideoList.class);
+            intent.putExtra("FolderName", folderName);
+            intent.putExtra("ListType", listType);
+            Toast.makeText(activity, "Video Deleted Successfully", Toast.LENGTH_LONG).show();
+            activity.startActivity(intent);
+        }else{
+            activity.finish();
+            activity.startActivity(new Intent(activity,WhatsappVideoList.class));
+            Toast.makeText(activity, "Video Deleted Successfully", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void setFolderName(String name) {
@@ -375,13 +387,13 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
     }
 
     public void saveWhatsAppVideo(String videoName,String videoPath) {
-        File myDirectory = new File(Environment.getExternalStorageDirectory(), "WhatsApp Status");
+        File myDirectory = new File(Environment.getExternalStorageDirectory(), "Play/WhatsApp Status Download");
 
         if(!myDirectory.exists()) {
             myDirectory.mkdirs();
         }
         File sourceLocation = new File(videoPath);
-        File targetLocation = new File(Environment.getExternalStorageDirectory().toString() + "/WhatsApp Status/"+videoName);
+        File targetLocation = new File(Environment.getExternalStorageDirectory().toString() + "/Play/WhatsApp Status Download/"+videoName);
         if (sourceLocation.exists()) {
             try {
                 InputStream in = new FileInputStream(sourceLocation);
@@ -397,8 +409,8 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
 
                 in.close();
                 out.close();
-                Toast.makeText(activity, "Status Saved Successfully, Check Play Folder", Toast.LENGTH_LONG).show();
-            } catch (Exception e) {
+                Toast.makeText(activity, "Status Saved Successfully, Refresh List", Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
                 Toast.makeText(activity, ""+e, Toast.LENGTH_LONG).show();
             }
 

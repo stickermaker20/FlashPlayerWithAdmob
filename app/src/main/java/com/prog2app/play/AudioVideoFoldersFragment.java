@@ -58,41 +58,41 @@ public class AudioVideoFoldersFragment extends Fragment {
         checkLayout(linearLayout);
         if( listType==null || listType.equals("video") || listType.equals("") || listType.equals(null)){
             audioVideoFoldersAdapter.setListType("video");
-            fetchVideoFolders();
+            fetchFolders("video");
         }else{
             audioVideoFoldersAdapter.setListType("audio");
-            fetchAudioFolders();
+            fetchFolders("audio");
 
         }
 
         return view;
     }
-    private void fetchVideoFolders() {
-        Uri uri= MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-        String[] projection={MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,MediaStore.MediaColumns.BUCKET_ID};
-
-        Cursor cursor=getContext().getContentResolver().query(uri,projection,null,null,null);
-
-        int folderNameInt=cache.getColumnIndex(cursor,MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
-
-        while (cursor.moveToNext()){
-            folderName.add(cursor.getString(folderNameInt));
-        }
-        // Clear the cache after you're done
-        cache.clear();
-
-        LinkedHashSet<String> hashSet=new LinkedHashSet<>(folderName);
-        ArrayList<String> singleFolderName=new ArrayList<>(hashSet);
-
-        //sort foldernames alphabetical
-        singleFolderName=sortFolderNames(singleFolderName);
-        countVideos(singleFolderName);
-
-
-        audioVideoFoldersAdapter.setValues(singleFolderName,totalAudiosVideos,getActivity());
-
-        nativeAd(singleFolderName);
-    }
+//    private void fetchVideoFolders() {
+//        Uri uri= MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+//        String[] projection={MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,MediaStore.MediaColumns.BUCKET_ID};
+//
+//        Cursor cursor=getContext().getContentResolver().query(uri,projection,null,null,null);
+//
+//        int folderNameInt=cache.getColumnIndex(cursor,MediaStore.MediaColumns.BUCKET_DISPLAY_NAME);
+//
+//        while (cursor.moveToNext()){
+//            folderName.add(cursor.getString(folderNameInt));
+//        }
+//        // Clear the cache after you're done
+//        cache.clear();
+//
+//        LinkedHashSet<String> hashSet=new LinkedHashSet<>(folderName);
+//        ArrayList<String> singleFolderName=new ArrayList<>(hashSet);
+//
+//        //sort foldernames alphabetical
+//        singleFolderName=sortFolderNames(singleFolderName);
+//        countVideos(singleFolderName);
+//
+//
+//        audioVideoFoldersAdapter.setValues(singleFolderName,totalAudiosVideos,getActivity());
+//
+//        nativeAd(singleFolderName);
+//    }
 
     private ArrayList<String> sortFolderNames(ArrayList<String> folderName) {
 
@@ -105,13 +105,18 @@ public class AudioVideoFoldersFragment extends Fragment {
         return folderName;
     }
 
-    private void fetchAudioFolders() {
-        Uri uri= MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;;
+    private void fetchFolders(String listType) {
+        Uri uri;
+        if(listType.equals("audio")){
+            uri= MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;;
+        }else {
+            uri= MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        }
         String path;
         int column_index_data,folderRepeat;
         Cursor cursor;
         String[] splits;
-        String[] projection={MediaStore.Audio.Media.ALBUM,MediaStore.MediaColumns.DATA};
+        String[] projection={MediaStore.MediaColumns.DATA};
 
         cursor=getContext().getContentResolver().query(uri,projection,  null,null,null);
 
@@ -138,7 +143,6 @@ public class AudioVideoFoldersFragment extends Fragment {
         LinkedHashSet<String> hashSet=new LinkedHashSet<>(folderName);
         ArrayList<String> singleFolderName=new ArrayList<>(hashSet);
         audioVideoFoldersAdapter.setValues(singleFolderName,totalAudiosVideos,getActivity());
-//        checkLayout();
         nativeAd(singleFolderName);
     }
 

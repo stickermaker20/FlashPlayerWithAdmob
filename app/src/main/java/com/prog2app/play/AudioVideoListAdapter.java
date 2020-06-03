@@ -101,6 +101,7 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
         } else {
             try {
                 holder.videoName.setText(videosTitle.get(position));
+                holder.videoDescription.setText(getTimeString(Integer.parseInt(videosDuration.get(position))));
                 if (listType.equals("video")) {
                     Glide.with(activity).asBitmap().load(new File(videosUri.get(position)))
                             .centerCrop().into(holder.imageView);
@@ -190,7 +191,7 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
                         popup.show();
                     }
                 });
-                holder.videoDescription.setText(getTimeString(Integer.parseInt(videosDuration.get(position))));
+
             } catch (Exception e) {
             }
         }

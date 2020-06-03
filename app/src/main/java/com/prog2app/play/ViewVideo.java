@@ -218,7 +218,8 @@ public class ViewVideo extends AppCompatActivity{
         adsLoaded=getIntent().getStringExtra("AdsLoaded");
         listType=getIntent().getStringExtra("ListType");
         videoTitleText.setText(videoTitle.get(position));
-        videoView.setVideoURI(Uri.parse(videoUri.get(position)));
+//        videoView.setVideoURI(Uri.parse(videoUri.get(position)));
+        videoView.setVideoPath(videoUri.get(position));
         videoView.start();
         audioFrontImage.setVisibility(View.GONE);
         audioBackImage.setVisibility(View.GONE);

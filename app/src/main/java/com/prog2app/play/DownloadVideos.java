@@ -24,6 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -49,8 +51,9 @@ public class DownloadVideos extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //editText.getText().toString()
-                String link="https://www.facebook.com/FoxNews/videos/1578935048932934/";
+              String link="https://video-amt2-1.xx.fbcdn.net/v/t42.1790-2/101106642_3053635948036566_4206688890385334272_n.mp4?_nc_cat=107&_nc_sid=5aebc0&efg=eyJ2ZW5jb2RlX3RhZyI6ImRhc2hfdjRhdWRpb2ZvcnNvdXJjZXBpcGVsaW5lXzEyOF9jcmZfMjNfbWFpbl8zLjBfZnJhZ18yX2F1ZGlvIn0%3D&_nc_ohc=XWLxZc-6keUAX8i8kdC&_nc_ht=video-amt2-1.xx&oh=342210d86f2bba4a314755991efea698&oe=5ED8F648";
                 if (isConnectingToInternet())
+
                     new DownloadTask(getApplicationContext(), button, link);
                 else
                     Toast.makeText(getApplication(), "Oops!! There is no internet connection. Please enable internet connection and try again.", Toast.LENGTH_SHORT).show();
@@ -58,28 +61,6 @@ public class DownloadVideos extends AppCompatActivity {
             }
         });
 
-    }
-    private static void downloadFile(String url, String fileName) {
-        try {
-            URL u = new URL(url);
-            HttpsURLConnection connection = (HttpsURLConnection) u.openConnection();
-            int contentLength = connection.getContentLength();
-
-            DataInputStream stream = new DataInputStream(u.openStream());
-
-            byte[] buffer = new byte[contentLength];
-            stream.readFully(buffer);
-            stream.close();
-
-            DataOutputStream fos = new DataOutputStream(new FileOutputStream(new File(Environment.getExternalStorageDirectory(), "Play/Videos Download" + fileName)));
-            fos.write(buffer);
-            fos.flush();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            return; // swallow a 404
-        } catch (IOException e) {
-            return; // swallow a 404
-        }
     }
 
         //Check if internet is present or not

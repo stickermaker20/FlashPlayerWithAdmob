@@ -26,7 +26,7 @@ public class DownloadTask {
         this.buttonText = buttonText;
         this.downloadUrl = downloadUrl;
 
-        downloadFileName = downloadUrl.replace("http://androhub.com/demo/", "");//Create file name by picking download file name from URL
+        downloadFileName = "1578935048932934.mp3";//Create file name by picking download file name from URL
         Log.e(TAG, downloadFileName);
 
         //Start Downloading Task
@@ -35,7 +35,7 @@ public class DownloadTask {
 
     private class DownloadingTask extends AsyncTask<Void, Void, Void> {
 
-        File apkStorage = new File("Play/Downloads");
+        File apkStorage = new File(Environment.getExternalStorageDirectory().toString(),"Play/Downloads");
         File outputFile = null;
 
         @Override
@@ -94,9 +94,7 @@ public class DownloadTask {
 
                 //If Connection response is not OK then show Logs
                 if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    Log.e(TAG, "Server returned HTTP " + c.getResponseCode()
-                            + " " + c.getResponseMessage());
-
+                    Toast.makeText(context,c.getResponseCode() + " " + c.getResponseMessage(),Toast.LENGTH_LONG).show();
                 }
 
 
@@ -111,7 +109,12 @@ public class DownloadTask {
 
                 //Create New File if not present
                 if (!outputFile.exists()) {
-                    outputFile.createNewFile();
+                    try {
+                        outputFile.createNewFile();
+                    }catch (Exception e){
+                        String z=e.getMessage();
+                        String x=z;
+                    }
                     Log.e(TAG, "File Created");
                 }
 

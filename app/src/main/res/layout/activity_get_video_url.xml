@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/mainLayout"
+    android:layout_height="match_parent"
+    tools:context=".GetVideoUrlActivity">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:id="@+id/editText"></EditText>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_margin="20dp"
+        android:id="@+id/linearLayout"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_below="@+id/editText">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Video Quality"
+            android:textStyle="bold"
+            android:textSize="19dp"
+            android:textColor="#000"></TextView>
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/editText">
+
+            <RadioButton
+                android:id="@+id/rbtn_144"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="144p" />
+
+            <RadioButton
+                android:id="@+id/rbtn_240"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="240p" />
+
+            <RadioButton
+                android:id="@+id/rbtn_380"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="380p" />
+
+            <RadioButton
+                android:id="@+id/rbtn_480"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="480p" />
+
+            <RadioButton
+                android:id="@+id/rbtn_720"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="720p" />
+        </RadioGroup>
+    </LinearLayout>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="20dp"
+        android:id="@+id/button"
+        android:text="Download Video"></Button>
+    <include layout="@layout/banner_ad_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"></include>
+
+</RelativeLayout>

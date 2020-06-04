@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
@@ -228,7 +229,8 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView, moreOptions, save;
+        ImageView imageView, moreOptions;
+        Button save;
         RelativeLayout relativeLayout;
         TextView videoName, videoDescription;
 
@@ -236,7 +238,7 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
             super(itemView);
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
             imageView = (ImageView) itemView.findViewById(R.id.videoThumbnail);
-            save = (ImageView) itemView.findViewById(R.id.save);
+            save = (Button) itemView.findViewById(R.id.save);
             videoName = (TextView) itemView.findViewById(R.id.videoName);
             moreOptions = (ImageView) itemView.findViewById(R.id.moreOptions);
             if (folderName.contains("Status of WhatsApp Play Folder") && moreOptions != null) {
@@ -411,6 +413,7 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
                 in.close();
                 out.close();
                 Toast.makeText(activity, "Status Saved Successfully, Refresh List", Toast.LENGTH_LONG).show();
+
                 } catch (Exception e) {
                 Toast.makeText(activity, ""+e, Toast.LENGTH_LONG).show();
             }

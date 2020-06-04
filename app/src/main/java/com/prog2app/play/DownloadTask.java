@@ -1,6 +1,8 @@
 package com.prog2app.play;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
@@ -13,20 +15,25 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class DownloadTask {
 
     private static final String TAG = "Download Task";
     private Context context;
-    private Button buttonText;
     private String downloadUrl = "", downloadFileName = "";
 
-    public DownloadTask(Context context, Button buttonText, String downloadUrl) {
+    public DownloadTask(Context context, String downloadUrl) {
         this.context = context;
-        this.buttonText = buttonText;
         this.downloadUrl = downloadUrl;
-
-        downloadFileName = "1578935048932934.mp3";//Create file name by picking download file name from URL
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date date = new Date();
+        downloadFileName = "facebook"+dateFormat.format(date)+".mp4";//Create file name by picking download file name from URL
         Log.e(TAG, downloadFileName);
 
         //Start Downloading Task
@@ -35,45 +42,53 @@ public class DownloadTask {
 
     private class DownloadingTask extends AsyncTask<Void, Void, Void> {
 
-        File apkStorage = new File(Environment.getExternalStorageDirectory().toString(),"Play/Downloads");
+        File apkStorage = new File(Environment.getExternalStorageDirectory().toString(),"Play/Downloaded Videos");
         File outputFile = null;
+
+
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            buttonText.setEnabled(false);
-            buttonText.setText("Download Started");//Set Button Text when download started
+            Toast.makeText(context,"Download Started",Toast.LENGTH_LONG).show();
+            SharedPreferences.Editor editor = context.getSharedPreferences("Log", MODE_PRIVATE).edit();
+            editor.putString("DownloadServiceTitle", "Downloading Video");
+            context.startService(new Intent(context , DownloadService.class));
         }
 
         @Override
         protected void onPostExecute(Void result) {
             try {
                 if (outputFile != null) {
-                    buttonText.setEnabled(true);
-                    buttonText.setText("Download Completed");//If Download completed then change button text
+                    Toast.makeText(context,"Download Completed",Toast.LENGTH_LONG).show();
+//                    SharedPreferences.Editor editor = context.getSharedPreferences("Log", MODE_PRIVATE).edit();
+//                    editor.putString("DownloadServiceTitle", "Video Download Finished");
+                    context.stopService(new Intent(context , DownloadService.class));
+
                 } else {
-                    buttonText.setText("Download Failed");//If download failed change button text
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            buttonText.setEnabled(true);
-                            buttonText.setText("Download Again");//Change button text again after 3sec
+                            Toast.makeText(context,"Download Failed",Toast.LENGTH_LONG).show();
+//                            SharedPreferences.Editor editor = context.getSharedPreferences("Log", MODE_PRIVATE).edit();
+//                            editor.putString("DownloadServiceTitle", "Video Download Failed");
+                            context.stopService(new Intent(context , DownloadService.class));
                         }
                     }, 3000);
 
-                    Log.e(TAG, "Download Failed");
 
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(context,"Download Failed with Exception - " + e.getMessage(),Toast.LENGTH_LONG).show();
                 //Change button text if exception occurs
-                buttonText.setText("Download Failed");
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        buttonText.setEnabled(true);
-                        buttonText.setText("Download Again");
+                        Toast.makeText(context,"Try again, download failed",Toast.LENGTH_LONG).show();
+//                        SharedPreferences.Editor editor = context.getSharedPreferences("Log", MODE_PRIVATE).edit();
+//                        editor.putString("DownloadServiceTitle", "Video Download Failed");
+                        context.stopService(new Intent(context , DownloadService.class));
                     }
                 }, 3000);
 
@@ -112,8 +127,6 @@ public class DownloadTask {
                     try {
                         outputFile.createNewFile();
                     }catch (Exception e){
-                        String z=e.getMessage();
-                        String x=z;
                     }
                     Log.e(TAG, "File Created");
                 }
@@ -124,13 +137,15 @@ public class DownloadTask {
 
                 byte[] buffer = new byte[1024];//Set buffer type
                 int len1 = 0;//init length
+                int downloadSiz=0;
                 while ((len1 = is.read(buffer)) != -1) {
                     fos.write(buffer, 0, len1);//Write new file
                 }
-
                 //Close all connection after doing task
                 fos.close();
                 is.close();
+
+
 
             } catch (Exception e) {
         Toast.makeText(context,"Download Error Exception " + e.getMessage(),Toast.LENGTH_LONG).show();
@@ -138,6 +153,9 @@ public class DownloadTask {
                 e.printStackTrace();
                 outputFile = null;
                 Log.e(TAG, "Download Error Exception " + e.getMessage());
+//                SharedPreferences.Editor editor = context.getSharedPreferences("Log", MODE_PRIVATE).edit();
+//                editor.putString("DownloadServiceTitle", "Video Download Failed");
+                context.stopService(new Intent(context , DownloadService.class));
             }
 
             return null;

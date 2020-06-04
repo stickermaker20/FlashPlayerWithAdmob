@@ -21,14 +21,13 @@ import com.google.android.gms.ads.AdView;
  */
 public class ExtraFragment extends Fragment {
     LinearLayout whatsAppLayout,downloadLayout,themeLayout,settingLayout,moreAppsLayout,rateUsLayout,aboutUsLayout;
-    AdView mAdView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view= inflater.inflate(R.layout.fragment_extra, container, false);
-        mAdView = view.findViewById(R.id.adView);
+        AdView mAdView = view.findViewById(R.id.adView);
         mAdView.loadAd(new AdRequest.Builder().build());
         whatsAppLayout=(LinearLayout) view.findViewById(R.id.whatsAppLayout);
         downloadLayout=(LinearLayout) view.findViewById(R.id.downloadLayout);

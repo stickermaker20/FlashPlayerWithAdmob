@@ -37,15 +37,23 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class DownloadVideos extends AppCompatActivity {
 
-
+Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download_videos);
         AdView mAdView = findViewById(R.id.adView);
         mAdView.loadAd(new AdRequest.Builder().build());
-        Intent intent=new Intent(this,GetVideoUrlActivity.class);
-        intent.putExtra("Downloader","Facebook");
-        startActivity(intent);
+        setTitle("Download Videos");
+        button=(Button) findViewById(R.id.button);
+        final Intent intent=new Intent(this,GetVideoUrlActivity.class);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.putExtra("Downloader","Facebook");
+                startActivity(intent);
+            }
+        });
+
     }
 }

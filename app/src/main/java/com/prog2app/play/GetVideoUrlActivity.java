@@ -20,6 +20,7 @@ import android.widget.RadioGroup;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.snackbar.Snackbar;
+import com.prog2app.play.Downloaders.FbVideoDownloader;
 
 public class GetVideoUrlActivity extends AppCompatActivity {
     EditText editText;
@@ -35,6 +36,7 @@ public class GetVideoUrlActivity extends AppCompatActivity {
         editText=(EditText) findViewById(R.id.editText);
         linearLayout=(LinearLayout) findViewById(R.id.linearLayout);
         radioGroup = findViewById(R.id.radioGroup);
+        setTitle("Play Video Downloader");
         internetPermission();
         AdView mAdView = findViewById(R.id.adView);
         mAdView.loadAd(new AdRequest.Builder().build());
@@ -47,8 +49,12 @@ public class GetVideoUrlActivity extends AppCompatActivity {
            public void onClick(View v) {
                if (isConnectingToInternet()) {
                     String videoUrl=editText.getText().toString();
+                    if(!videoUrl.equals("") && !videoUrl.equals(null)){
                     if(downloader.equals("Facebook")){
-
+                        FbVideoDownloader fbVideoDownloader = new FbVideoDownloader(GetVideoUrlActivity.this,videoUrl);
+                        Snackbar.make(findViewById(R.id.mainLayout),"Video is downloading in background",Snackbar.LENGTH_LONG).show();
+                        fbVideoDownloader.DownloadVideo();
+                        editText.setText("");
                     }else if(downloader.equals("Instagram")){
 
                     }else if(downloader.equals("Dailymotion")){
@@ -62,6 +68,10 @@ public class GetVideoUrlActivity extends AppCompatActivity {
                     }else if(downloader.equals("Vimeo")){
 
                     }else {                    }
+               }else{
+                        Snackbar.make(findViewById(R.id.mainLayout),"Sorry, first paste video URL",Snackbar.LENGTH_LONG).show();
+
+                    }
                }
                else {
                    Snackbar.make(findViewById(R.id.mainLayout),"Sorry, no internet",Snackbar.LENGTH_LONG).show();

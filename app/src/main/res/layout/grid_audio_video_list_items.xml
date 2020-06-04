@@ -66,7 +66,7 @@
         android:id="@+id/save"
         android:layout_marginTop="10dp"
         android:text="Save"
-        android:background="#25D366"
+        android:background="@color/colorGreen"
         android:textColor="#fff"
         android:visibility="gone"
         android:layout_below="@id/cardView"

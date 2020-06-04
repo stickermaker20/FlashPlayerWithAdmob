@@ -77,6 +77,9 @@
         android:layout_centerInParent="true"
         android:layout_marginTop="20dp"
         android:id="@+id/button"
+        android:textColor="#FFFFFF"
+        android:background="@color/colorGreen"
+        android:padding="10dp"
         android:text="Download Video"></Button>
     <include layout="@layout/banner_ad_layout"
         android:layout_height="wrap_content"

@@ -363,30 +363,25 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
     }
 
     public Uri getAudioAlbumImageContentUri(Context context, String filePath) {
-        Uri imgUri = null;
-        Uri audioUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection = MediaStore.Audio.Media.DATA + "=? ";
-        String[] projection = new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ALBUM_ID};
+        final Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        final String[] cursor_cols = { MediaStore.Audio.Media.ALBUM_ID };
 
-        Cursor cursor = context.getContentResolver().query(
-                audioUri,
-                projection,
-                selection,
-                new String[]{filePath}, null);
+        final String where = MediaStore.Audio.Media.IS_MUSIC + "=1 AND " + MediaStore.Audio.Media.DATA + " = '"
+                + filePath + "'";
+        final Cursor cursor = context.getApplicationContext().getContentResolver().query(uri, cursor_cols, where, null, null);
+        /*
+         * If the cusor count is greater than 0 then parse the data and get the art id.
+         */
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            Long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
 
-        if (cursor != null && cursor.moveToFirst()) {
-            long albumId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
             Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
-            imgUri = ContentUris.withAppendedId(sArtworkUri,
-                    albumId);
-
-
+            Uri albumArtUri = ContentUris.withAppendedId(sArtworkUri, albumId);
             cursor.close();
-
+            return albumArtUri;
         }
-        if (filePath.contains(".ogg"))
-            return null;
-        return imgUri;
+        return Uri.EMPTY;
     }
 
     public void saveWhatsAppVideo(String videoName,String videoPath) {

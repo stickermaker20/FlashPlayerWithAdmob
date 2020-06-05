@@ -147,9 +147,13 @@ public class InstagramVideoDownloader implements VideoDownloader {
                     long downLoadID = manager.enqueue(request);
                 } catch (Exception e) {
                     if (Looper.myLooper()==null)
-                    Looper.prepare();
-                    Toast.makeText(context, "Video Can't be downloaded! Try Again", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
+                        try {
+                            Looper.prepare();
+                            Looper.loop();
+                        }catch (Exception ex){
+                        }
+                    Toast.makeText(context, "Wrong Video URL or Check Internet Connection", Toast.LENGTH_SHORT).show();
+
                 }
 
             }

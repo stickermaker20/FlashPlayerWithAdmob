@@ -16,6 +16,7 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -37,7 +38,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class DownloadVideos extends AppCompatActivity {
 
-Button button;
+ImageView facebookButton,instagramButton,twitterButton,dailymotionButton,tiktokButton,vimeoButton,topbuzzButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,12 +46,60 @@ Button button;
         AdView mAdView = findViewById(R.id.adView);
         mAdView.loadAd(new AdRequest.Builder().build());
         setTitle("Download Videos");
-        button=(Button) findViewById(R.id.button);
+        facebookButton=(ImageView) findViewById(R.id.facebookButton);
+        instagramButton=(ImageView) findViewById(R.id.instagramButton);
+        twitterButton=(ImageView) findViewById(R.id.twitterButton);
+        dailymotionButton=(ImageView) findViewById(R.id.dailymotionButton);
+        tiktokButton=(ImageView) findViewById(R.id.tiktokButton);
+        vimeoButton=(ImageView) findViewById(R.id.vimeoButton);
+        topbuzzButton=(ImageView) findViewById(R.id.topbuzzButton);
         final Intent intent=new Intent(this,GetVideoUrlActivity.class);
-        button.setOnClickListener(new View.OnClickListener() {
+        facebookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 intent.putExtra("Downloader","Facebook");
+                startActivity(intent);
+            }
+        });
+        instagramButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.putExtra("Downloader","Instagram");
+                startActivity(intent);
+            }
+        });
+        dailymotionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.putExtra("Downloader","Dailymotion");
+                startActivity(intent);
+            }
+        });
+        twitterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.putExtra("Downloader","Twitter");
+                startActivity(intent);
+            }
+        });
+        topbuzzButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.putExtra("Downloader","Topbuzz");
+                startActivity(intent);
+            }
+        });
+        tiktokButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.putExtra("Downloader","Tiktok");
+                startActivity(intent);
+            }
+        });
+        vimeoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.putExtra("Downloader","Vimeo");
                 startActivity(intent);
             }
         });

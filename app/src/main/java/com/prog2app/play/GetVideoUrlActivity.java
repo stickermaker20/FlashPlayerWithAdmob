@@ -32,7 +32,7 @@ import com.prog2app.play.Downloaders.VimeoVideoDownloader;
 public class GetVideoUrlActivity extends AppCompatActivity {
     EditText editText;
     Button button;
-    LinearLayout linearLayout;
+    LinearLayout radioGroupLayout;
     RadioGroup radioGroup;
     RadioButton btn =  null;
     TextView pointsText,pointOne,pointTwo,noteText;
@@ -47,7 +47,7 @@ public class GetVideoUrlActivity extends AppCompatActivity {
         pointsText=(TextView) findViewById(R.id.pointsText);
         noteText=(TextView) findViewById(R.id.noteText);
 
-        linearLayout=(LinearLayout) findViewById(R.id.linearLayout);
+        radioGroupLayout=(LinearLayout) findViewById(R.id.radioGroupLayout);
         radioGroup = findViewById(R.id.radioGroup);
         setTitle("Play Video Downloader");
         internetPermission();
@@ -59,7 +59,7 @@ public class GetVideoUrlActivity extends AppCompatActivity {
         pointTwo.setText("2. Come back here, paste the video path or link in the below box and click 'DOWNLOAD VIDEO' button.");
         noteText.setText("Your video will automatically download in background.");
         if(downloader.equals("Dailymotion")){
-            linearLayout.setVisibility(View.VISIBLE);
+            radioGroupLayout.setVisibility(View.VISIBLE);
         }
         button.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -67,47 +67,44 @@ public class GetVideoUrlActivity extends AppCompatActivity {
                if (isConnectingToInternet()) {
                     String videoUrl=editText.getText().toString();
                     if(!videoUrl.equals("") && !videoUrl.equals(null)){
+                        try{
                     if(downloader.equals("Facebook")){
                         FbVideoDownloader fbVideoDownloader = new FbVideoDownloader(GetVideoUrlActivity.this,videoUrl);
-                        Snackbar.make(findViewById(R.id.mainLayout),"Video is downloading in background",Snackbar.LENGTH_LONG).show();
                         fbVideoDownloader.DownloadVideo();
                         editText.setText("");
                     }else if(downloader.equals("Instagram")){
                         InstagramVideoDownloader instagramVideoDownloader = new InstagramVideoDownloader(GetVideoUrlActivity.this,videoUrl);
-                        Snackbar.make(findViewById(R.id.mainLayout),"Video is downloading in background",Snackbar.LENGTH_LONG).show();
                         instagramVideoDownloader.DownloadVideo();
                         editText.setText("");
 
                     }else if(downloader.equals("Dailymotion")){
                         DailyMotionDownloader dailyMotionDownloader = new DailyMotionDownloader(GetVideoUrlActivity.this,getVideoQuality(),videoUrl,12);
-                        Snackbar.make(findViewById(R.id.mainLayout),"Video is downloading in background",Snackbar.LENGTH_LONG).show();
                         dailyMotionDownloader.DownloadVideo();
                         editText.setText("");
                     }else if(downloader.equals("Tiktok")){
                         TiktokVideoDownloader tiktokVideoDownloader = new TiktokVideoDownloader(GetVideoUrlActivity.this, videoUrl);
-                        Snackbar.make(findViewById(R.id.mainLayout),"Video is downloading in background",Snackbar.LENGTH_LONG).show();
                         tiktokVideoDownloader.DownloadVideo();
                         editText.setText("");
                     }else if(downloader.equals("Twitter")){
                         TwitterVideoDownloader twitterVideoDownloader = new TwitterVideoDownloader(GetVideoUrlActivity.this, videoUrl);
-                        Snackbar.make(findViewById(R.id.mainLayout),"Video is downloading in background",Snackbar.LENGTH_LONG).show();
                         twitterVideoDownloader.DownloadVideo();
                         editText.setText("");
 
 
                     }else if(downloader.equals("Topbuzz")){
                         TopBuzzDownloader topBuzzDownloader = new TopBuzzDownloader(GetVideoUrlActivity.this, videoUrl, 12);
-                        Snackbar.make(findViewById(R.id.mainLayout),"Video is downloading in background",Snackbar.LENGTH_LONG).show();
                         topBuzzDownloader.DownloadVideo();
                         editText.setText("");
 
                     }else if(downloader.equals("Vimeo")){
                         VimeoVideoDownloader vimeoVideoDownloader = new VimeoVideoDownloader(GetVideoUrlActivity.this, videoUrl);
-                        Snackbar.make(findViewById(R.id.mainLayout),"Video is downloading in background",Snackbar.LENGTH_LONG).show();
                         vimeoVideoDownloader.DownloadVideo();
                         editText.setText("");
                     }
-               }else{
+               }catch (Exception e){
+                            Snackbar.make(findViewById(R.id.mainLayout),""+e.getMessage(),Snackbar.LENGTH_LONG).show();
+                        }
+                    }else{
                         Snackbar.make(findViewById(R.id.mainLayout),"Sorry, first paste video URL",Snackbar.LENGTH_LONG).show();
 
                     }

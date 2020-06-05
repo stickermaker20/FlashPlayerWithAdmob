@@ -86,6 +86,7 @@ public class AudioVideoFoldersAdapter extends RecyclerView.Adapter<AudioVideoFol
                     }
                 });
             }else{
+                try{
                 if(!linearLayout){
                     StringTokenizer tokens = new StringTokenizer(folderName.get(position), " ");
                     holder.folderName.setText(tokens.nextToken());
@@ -111,7 +112,7 @@ public class AudioVideoFoldersAdapter extends RecyclerView.Adapter<AudioVideoFol
 
                     }
                 });
-            }
+            }catch (Exception e){}}
 
         }
     }

@@ -946,7 +946,7 @@ public class ViewVideo extends AppCompatActivity{
             cursor.close();
 
         }
-        if(filePath.contains(".ogg"))
+        if(!filePath.contains(".mp3"))
             return null;
         return imgUri;
     }

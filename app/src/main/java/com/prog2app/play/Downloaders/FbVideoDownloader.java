@@ -9,7 +9,9 @@ import android.os.Environment;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.prog2app.play.Interfaces.VideoDownloader;
+import com.prog2app.play.R;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -149,9 +151,13 @@ public class FbVideoDownloader implements VideoDownloader {
 
             }
             else {
-                Looper.prepare();
+                try {
+                    Looper.prepare();
+                    Looper.loop();
+                }catch (Exception e){
+                }
                 Toast.makeText(context, "Wrong Video URL or Check Internet Connection", Toast.LENGTH_SHORT).show();
-                Looper.loop();
+
             }
         }
 

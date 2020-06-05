@@ -5,17 +5,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DownloadVideos">
-    <Button
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_above="@+id/include"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
-        android:layout_centerInParent="true"
-        android:text="facebook"></Button>
-
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:id="@+id/facebookButton"
+        android:src="@drawable/facebook_button"></ImageView>
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:id="@+id/instagramButton"
+        android:src="@drawable/instagram_button"></ImageView>
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:id="@+id/twitterButton"
+        android:src="@drawable/twitter_button"></ImageView>
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:id="@+id/tiktokButton"
+        android:src="@drawable/tiktok_button"></ImageView>
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:id="@+id/vimeoButton"
+        android:src="@drawable/vimeo_button"></ImageView>
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:id="@+id/dailymotionButton"
+        android:src="@drawable/dailymotion_button"></ImageView>
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:id="@+id/topbuzzButton"
+        android:src="@drawable/topbuzz_button"></ImageView>
+    </LinearLayout>
+    </ScrollView>
     <include layout="@layout/banner_ad_layout"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_marginBottom="5dp"
+        android:layout_margin="5dp"
+        android:id="@+id/include"
         android:layout_centerInParent="true"
         android:layout_alignParentBottom="true"></include>
 

@@ -195,6 +195,7 @@ public class  TopBuzzDownloader {
             super.onPostExecute(o);
             FinalURL = o;
             if(FinalURL != null || FinalURL != "No URL") {
+                try{
                 String path = createDirectory();
                 File newFile = new File(path, VideoTitle);
                 DownloadManager.Request request = new DownloadManager.Request(Uri.parse(FinalURL));
@@ -208,7 +209,9 @@ public class  TopBuzzDownloader {
                         .setTitle("Play Downloader");
                 DownloadManager manager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
                 DownLoadID = manager.enqueue(request);
-            }
+            }catch (Exception e){
+                    Toast.makeText(context, "Video Can't be downloaded!", Toast.LENGTH_SHORT).show();
+                }}
             else {
                 Toast.makeText(context, "Video Can't be downloaded!", Toast.LENGTH_SHORT).show();
             }

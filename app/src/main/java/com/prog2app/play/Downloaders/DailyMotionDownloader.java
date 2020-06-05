@@ -163,20 +163,24 @@ public class DailyMotionDownloader {
         protected void onPostExecute(String o) {
             super.onPostExecute(o);
             FinalURL = o;
-            String path = createDirectory();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM_dd HH:mm");
-            File newFile = new File(path, simpleDateFormat.format(new Date()) + "video.mp4");
-            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(FinalURL));
-            request.allowScanningByMediaScanner();
-            request.setDescription("Video Downloading")
-                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE)
-                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
-                    .setDestinationUri(Uri.fromFile(newFile))
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                    .setVisibleInDownloadsUi(true)
-                    .setTitle("Downloading");
-            DownloadManager manager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
-            DownLoadID = manager.enqueue(request);
+            try {
+                String path = createDirectory();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM_dd HH:mm");
+                File newFile = new File(path, simpleDateFormat.format(new Date()) + "video.mp4");
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(FinalURL));
+                request.allowScanningByMediaScanner();
+                request.setDescription("Video Downloading")
+                        .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE)
+                        .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
+                        .setDestinationUri(Uri.fromFile(newFile))
+                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        .setVisibleInDownloadsUi(true)
+                        .setTitle("Downloading");
+                DownloadManager manager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+                DownLoadID = manager.enqueue(request);
+            }catch (Exception e) {
+                Toast.makeText(context, "Video Can't be downloaded!", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

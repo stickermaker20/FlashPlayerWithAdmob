@@ -11,8 +11,8 @@
         android:icon="@drawable/ic_queue_music_black_24dp"/>
     <item
         android:id="@+id/other_fragment"
-        android:title="Other"
-        android:icon="@drawable/ic_queue_music_black_24dp"/>
+        android:title="More"
+        android:icon="@drawable/ic_more_black_24dp"/>
 
 
 </menu>

@@ -108,7 +108,7 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
                             .centerCrop().into(holder.imageView);
                 } else {
                     Uri imgUri = getAudioAlbumImageContentUri(activity, videosUri.get(position));
-                    if (imgUri == null) {
+                    if (imgUri.toString().length()<2) {
                         Glide.with(activity).load(activity.getResources().getIdentifier("logo", "drawable", activity.getPackageName()))
                                 .centerInside().into(holder.imageView);
                     } else {
@@ -194,6 +194,7 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
                 });
 
             } catch (Exception e) {
+//                Toast.makeText(activity,""+e.getMessage(),Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -407,10 +408,10 @@ public class AudioVideoListAdapter extends RecyclerView.Adapter<AudioVideoListAd
 
                 in.close();
                 out.close();
-                Toast.makeText(activity, "Status Saved Successfully, Refresh List", Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, "Status Saved Successfully, Swipe Left and Refresh List", Toast.LENGTH_LONG).show();
 
                 } catch (Exception e) {
-                Toast.makeText(activity, ""+e, Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, ""+e.getMessage(), Toast.LENGTH_LONG).show();
             }
 
 

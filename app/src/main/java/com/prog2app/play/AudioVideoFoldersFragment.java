@@ -124,8 +124,19 @@ public class AudioVideoFoldersFragment extends Fragment {
         while (cursor.moveToNext()){
             path=cursor.getString(column_index_data);
             splits = path.split("/");
-
-            folderName.add(splits[splits.length-2]) ;//(cursor.getString(folderNameInt));
+            if(path.endsWith(".mp3") || path.endsWith(".m4a") && listType.equals("audio")) {
+//                if(splits[splits.length - 2].equals("") || splits[splits.length - 2].equals(null)){
+//                    folderName.add(splits[splits.length - 3]);
+//                }else{
+                    folderName.add(splits[splits.length - 2]);
+//                }
+            }else if(listType.equals("video")){
+//                if(splits[splits.length - 2].equals("") || splits[splits.length - 2].equals(null)){
+//                    folderName.add(splits[splits.length - 3]);
+//                }else{
+                    folderName.add(splits[splits.length - 2]);
+//                }
+            }
 
 
         }

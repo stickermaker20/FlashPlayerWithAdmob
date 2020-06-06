@@ -13,7 +13,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-public class WebViewVideoDownload extends AppCompatActivity {
+public class WebViewActivity extends AppCompatActivity {
     WebView webView;
     ProgressDialog   progressDialog;
 
@@ -22,10 +22,10 @@ public class WebViewVideoDownload extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view_video_download);
         webView=(WebView) findViewById(R.id.webView);
-        progressDialog=new ProgressDialog(WebViewVideoDownload.this);
+        progressDialog=new ProgressDialog(WebViewActivity.this);
         if (isConnectingToInternet()) {
             webView.setWebViewClient(new MyWebViewClient());
-            webView.loadUrl("https://www.getfvid.com/");
+            webView.loadUrl("https://www.technolligencee.com/");
             WebSettings webSettings=webView.getSettings();
             webSettings.setJavaScriptEnabled(true);
         }
@@ -36,12 +36,6 @@ public class WebViewVideoDownload extends AppCompatActivity {
 
     }
     private class MyWebViewClient extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            url.contains("https://video.xx.fbcdn.net/");
-            new DownloadTask(getApplicationContext(), url);
-            return true;
-        }
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {

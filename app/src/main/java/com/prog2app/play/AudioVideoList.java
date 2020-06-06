@@ -65,6 +65,8 @@ public class AudioVideoList extends AppCompatActivity {
     }
     private void fetchAudios(String folderName) {
         Uri uri;
+        String path;
+        String[] splits;
         int column_index_data,thum,title;
         String duration;
         Cursor cursor;
@@ -81,6 +83,9 @@ public class AudioVideoList extends AppCompatActivity {
         column_index_data=cache.getColumnIndex(cursor,MediaStore.MediaColumns.DATA);
         title=cache.getColumnIndex(cursor,MediaStore.Audio.Media.DISPLAY_NAME);
         while (cursor.moveToNext()){
+            path=cursor.getString(column_index_data);
+            splits = path.split("/");
+            if(path.endsWith("mp3") || path.endsWith("m4a") && folderName.equals(splits[splits.length - 2])){
             audiosVideosUri.add(cursor.getString(column_index_data));
             audiosVideosTitle.add(cursor.getString(title));
             duration=cursor.getString(cache.getColumnIndex(cursor,MediaStore.Audio.Media.DURATION));
@@ -91,7 +96,7 @@ public class AudioVideoList extends AppCompatActivity {
             }else {
                 audiosVideosDuration.add(duration);
             }
-        }
+        }}
         // Clear the cache after you're done
         cache.clear();
         retriever.release();
@@ -105,6 +110,8 @@ public class AudioVideoList extends AppCompatActivity {
         int column_index_data,title;
         String duration;
         Cursor cursor;
+        String path;
+        String[] splits;
         uri= MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
         String[] projection={MediaStore.MediaColumns.DATA, MediaStore.Video.Media.DISPLAY_NAME, MediaStore.Video.Media.DURATION};
         String orderBy=MediaStore.Images.Media.DATE_TAKEN;
@@ -119,17 +126,23 @@ public class AudioVideoList extends AppCompatActivity {
         title=cache.getColumnIndex(cursor,MediaStore.Video.Media.DISPLAY_NAME);
 
         while (cursor.moveToNext()){
-            audiosVideosUri.add(cursor.getString(column_index_data));
-            audiosVideosTitle.add(cursor.getString(title));
-            duration=cursor.getString(cache.getColumnIndex(cursor,MediaStore.Video.Media.DURATION));
-            if(duration==null){
-                retriever.setDataSource(cursor.getString(column_index_data));
-                duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                audiosVideosDuration.add(duration);
-            }else {
-                audiosVideosDuration.add(duration);
+            path=cursor.getString(column_index_data);
+            splits = path.split("/");
+//            if(splits[splits.length - 2].equals("") || splits[splits.length - 2].equals(null)){
+//                splits[splits.length - 2]=splits[splits.length - 3];
+//            }
+            if(folderName.equals(splits[splits.length - 2])) {
+                audiosVideosUri.add(cursor.getString(column_index_data));
+                audiosVideosTitle.add(cursor.getString(title));
+                duration = cursor.getString(cache.getColumnIndex(cursor, MediaStore.Video.Media.DURATION));
+                if (duration == null) {
+                    retriever.setDataSource(cursor.getString(column_index_data));
+                    duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                    audiosVideosDuration.add(duration);
+                } else {
+                    audiosVideosDuration.add(duration);
+                }
             }
-
 
         }
         // Clear the cache after you're done
@@ -254,7 +267,8 @@ public class AudioVideoList extends AppCompatActivity {
         linearLayout=!linearLayout;
     }
     public class ColumnIndexCache {
-        private ArrayMap<String, Integer> mMap = new ArrayMap<>();   public int getColumnIndex(Cursor cursor, String columnName) {
+        private ArrayMap<String, Integer> mMap = new ArrayMap<>();
+        public int getColumnIndex(Cursor cursor, String columnName) {
             if (!mMap.containsKey(columnName))
                 mMap.put(columnName, cursor.getColumnIndex(columnName));
             return mMap.get(columnName);

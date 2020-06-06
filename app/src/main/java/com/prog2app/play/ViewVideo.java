@@ -1,12 +1,12 @@
 package com.prog2app.play;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.app.PictureInPictureParams;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -93,6 +93,7 @@ public class ViewVideo extends AppCompatActivity{
     //native ad
     TemplateView template;
     String adsLoaded;
+    AudioService maudioService=null;
 
 
 
@@ -134,6 +135,13 @@ public class ViewVideo extends AppCompatActivity{
         }
     };
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(listType.equals("audio")){
+            stopService(new Intent(this, AudioService.class));
+        }
+    }
 
     @Override
     protected void onPause() {
@@ -143,17 +151,28 @@ public class ViewVideo extends AppCompatActivity{
             videoView.pause();
             videoPlayed=true;
         }
+        if(listType.equals("audio")){
+           Intent intent=new Intent(this, AudioService.class);
+           intent.putExtra("audioPath",videoUri.get(position));
+           intent.putExtra("audioTime",videoPauseTime);
+           startService(intent);
+        }
+
     }
     @Override
     protected void onResume() {
         super.onResume();
-        if (videoPlayed) {
-            videoView.seekTo(videoPauseTime);
-            pause.setVisibility(View.GONE);
-            play.setVisibility(View.VISIBLE);
-        }else{
-            videoView.seekTo(videoPauseTime);
+            if (videoPlayed) {
+                videoView.seekTo(videoPauseTime);
+                pause.setVisibility(View.GONE);
+                play.setVisibility(View.VISIBLE);
+            }else{
+                videoView.seekTo(videoPauseTime);
+            }
+        if(listType.equals("audio")){
+            stopService(new Intent(this, AudioService.class));
         }
+
     }
 
 
@@ -575,22 +594,24 @@ public class ViewVideo extends AppCompatActivity{
         });
 
     }
+    private void callBitmapBlurFunction(Bitmap bitmap,Uri imgUri){
+        Glide.with(this).load(this.getResources().getIdentifier("cover", "drawable", this.getPackageName()))
+                .centerInside().into(audioFrontImage);
+        try {
+            imgUri=Uri.parse("android.resource://"+getPackageName()+"/drawable/"+R.drawable.cover);
+            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver() , imgUri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Bitmap blurredBitmap = BlurBuilder.blur( this, bitmap);
 
+        audioBackImage.setBackground( new BitmapDrawable( getResources(), blurredBitmap ) );
+    }
     private void settingAudioImages(int pos) {
         Bitmap bitmap = null;
         Uri imgUri=getAudioAlbumImageContentUri(this,videoUri.get(pos));
-        if(imgUri==null) {
-            Glide.with(this).load(this.getResources().getIdentifier("cover", "drawable", this.getPackageName()))
-                    .centerInside().into(audioFrontImage);
-            try {
-                imgUri=Uri.parse("android.resource://"+getPackageName()+"/drawable/"+R.drawable.cover);
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver() , imgUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Bitmap blurredBitmap = BlurBuilder.blur( this, bitmap);
-
-            audioBackImage.setBackground( new BitmapDrawable( getResources(), blurredBitmap ) );
+        if (imgUri==null) {
+           callBitmapBlurFunction(bitmap,imgUri);
         }else {
             Glide.with(this).asBitmap().load(imgUri)
                     .centerCrop().into(audioFrontImage);
@@ -600,10 +621,13 @@ public class ViewVideo extends AppCompatActivity{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if(bitmap==null){
+                callBitmapBlurFunction(bitmap,imgUri);
+            }else {
+                Bitmap blurredBitmap = BlurBuilder.blur(this, bitmap);
 
-            Bitmap blurredBitmap = BlurBuilder.blur( this, bitmap);
-
-            audioBackImage.setBackground( new BitmapDrawable( getResources(), blurredBitmap ) );
+                audioBackImage.setBackground(new BitmapDrawable(getResources(), blurredBitmap));
+            }
         }
     }
 
@@ -925,31 +949,27 @@ public class ViewVideo extends AppCompatActivity{
         }
     }
     public Uri getAudioAlbumImageContentUri(Context context, String filePath) {
-        Uri imgUri = null;
-        Uri audioUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection = MediaStore.Audio.Media.DATA + "=? ";
-        String[] projection = new String[] { MediaStore.Audio.Media._ID , MediaStore.Audio.Media.ALBUM_ID};
+        final Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        final String[] cursor_cols = { MediaStore.Audio.Media.ALBUM_ID };
 
-        Cursor cursor = context.getContentResolver().query(
-                audioUri,
-                projection,
-                selection,
-                new String[] { filePath }, null);
+        final String where = MediaStore.Audio.Media.IS_MUSIC + "=1 AND " + MediaStore.Audio.Media.DATA + " = '"
+                + filePath + "'";
+        final Cursor cursor = context.getApplicationContext().getContentResolver().query(uri, cursor_cols, where, null, null);
+        /*
+         * If the cusor count is greater than 0 then parse the data and get the art id.
+         */
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            Long albumId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
 
-        if (cursor != null && cursor.moveToFirst()) {
-            long albumId = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
             Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
-            imgUri= ContentUris.withAppendedId(sArtworkUri,
-                    albumId);
-
-
+            Uri albumArtUri = ContentUris.withAppendedId(sArtworkUri, albumId);
             cursor.close();
-
+            return albumArtUri;
         }
-        if(!filePath.contains(".mp3"))
-            return null;
-        return imgUri;
+        return null;
     }
+
     public static class BlurBuilder {
         private static final float BITMAP_SCALE = 0.1f;
         private static final float BLUR_RADIUS = 9.0f;

@@ -49,6 +49,12 @@ public class AudioVideoFolders extends AppCompatActivity implements BottomNaviga
         linearLayout = prefs.getBoolean("foldersLinearLayout", true);
         bundle.putString("ListType", "video");
         audioVideoFoldersFragment.setArguments(bundle);
+        navigationView.post(new Runnable() {
+            @Override
+            public void run() {
+                navigationView.getMenu().findItem(R.id.video_fragment).setChecked(true);
+            }
+        });
         getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,audioVideoFoldersFragment).commit();
     }
 
@@ -115,7 +121,6 @@ public class AudioVideoFolders extends AppCompatActivity implements BottomNaviga
 
         }else if(itemId == R.id.other_fragment){
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,new ExtraFragment()).commit();
-//            startActivity(new Intent(this,WhatsappVideoList.class));
         }
         return true;
     }

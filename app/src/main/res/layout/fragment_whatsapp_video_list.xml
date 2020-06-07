@@ -25,7 +25,7 @@
                 android:layout_marginBottom="10dp"
                 android:textSize="20dp"
                 android:layout_marginTop="15dp"
-                android:textColor="#000"
+                android:textColor="@color/textColor"
                 android:text="How to Use"></TextView>
             <TextView
                 android:layout_width="wrap_content"
@@ -33,21 +33,21 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
                 android:textSize="15dp"
-                android:textColor="#000"
+                android:textColor="@color/textColor"
                 android:text="We can help you to save friends WhatsApp status follow these steps :"></TextView>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:textSize="15dp"
-                android:textColor="#000"
+                android:textColor="@color/textColor"
                 android:text="1. Open WhatsApp and View wanted status videos"></TextView>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:textSize="15dp"
-                android:textColor="#000"
+                android:textColor="@color/textColor"
                 android:text="2. Come back here, save the video from seen status that you don't want to be deleted"></TextView>
 
 
@@ -56,7 +56,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_below="@+id/textLayout"
         android:layout_width="match_parent"
-        android:background="#fff"
         android:layout_height="match_parent"
         android:id="@+id/recyclerView">
 

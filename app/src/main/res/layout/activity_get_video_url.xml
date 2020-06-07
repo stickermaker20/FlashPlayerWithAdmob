@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/mainLayout"
+    android:background="@color/colorBackground"
     android:layout_height="match_parent"
     tools:context=".GetVideoUrlActivity">
     <ScrollView
@@ -26,7 +27,7 @@
             android:layout_marginBottom="10dp"
             android:textSize="20dp"
             android:layout_marginTop="15dp"
-            android:textColor="#000"
+            android:textColor="@color/textColor"
             android:text="How to Use"></TextView>
         <TextView
             android:layout_width="wrap_content"
@@ -35,21 +36,21 @@
             android:layout_marginTop="5dp"
             android:textSize="15dp"
             android:id="@+id/pointsText"
-            android:textColor="#000"></TextView>
+            android:textColor="@color/textColor"></TextView>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:textSize="15dp"
             android:id="@+id/pointOne"
-            android:textColor="#000"></TextView>
+            android:textColor="@color/textColor"></TextView>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:textSize="15dp"
             android:id="@+id/pointTwo"
-            android:textColor="#000"></TextView>
+            android:textColor="@color/textColor"></TextView>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,7 +58,7 @@
             android:layout_marginTop="10dp"
             android:textSize="15dp"
             android:id="@+id/noteText"
-            android:textColor="#000"></TextView>
+            android:textColor="@color/textColor"></TextView>
 
 
     </LinearLayout>
@@ -69,9 +70,11 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_centerInParent="true"
+        android:textColor="#212121"
         android:layout_height="50dp"
         android:layout_margin="25dp"
         android:hint="    Paste video link here"
+        android:textColorHint="#212121"
         android:background="@drawable/rounded_edittext"
         android:id="@+id/editText"></EditText>
     <LinearLayout

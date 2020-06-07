@@ -44,7 +44,7 @@
         android:id="@+id/videoName"
         android:text="VLC-23HFK7X"
         android:textSize="17dp"
-        android:textColor="#212121"
+        android:textColor="@color/textColor"
         android:layout_toRightOf="@+id/cardView"
         android:layout_marginTop="10dp"
         android:layout_toLeftOf="@+id/moreOptions"

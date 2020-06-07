@@ -31,7 +31,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
+            android:textColor="@color/textColor"
             android:textSize="20dp"
             android:text="WhatsApp Status Saver"></TextView>
     </LinearLayout>
@@ -51,7 +51,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
+            android:textColor="@color/textColor"
             android:textSize="20dp"
             android:text="Download Videos"></TextView>
     </LinearLayout>
@@ -67,13 +67,21 @@
             android:layout_width="30dp"
             android:layout_marginRight="25dp"
             android:layout_height="30dp"
-            android:src="@drawable/theme_icon"></ImageView>
+            android:src="@drawable/darkmode_icon"></ImageView>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
+            android:textColor="@color/textColor"
             android:textSize="20dp"
-            android:text="Themes"></TextView>
+            android:text="Dark Mode"></TextView>
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/textColor"
+            android:layout_marginLeft="120dp"
+            android:textOff="OFF"
+            android:textOn="ON"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -91,7 +99,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
+            android:textColor="@color/textColor"
             android:textSize="20dp"
             android:text="Settings"></TextView>
     </LinearLayout>
@@ -111,7 +119,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
+            android:textColor="@color/textColor"
             android:textSize="20dp"
             android:text="More Apps"></TextView>
     </LinearLayout>
@@ -131,7 +139,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
+            android:textColor="@color/textColor"
             android:textSize="20dp"
             android:text="Rate Us"></TextView>
     </LinearLayout>
@@ -151,7 +159,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#000"
+            android:textColor="@color/textColor"
             android:textSize="20dp"
             android:text="About Us"></TextView>
     </LinearLayout>

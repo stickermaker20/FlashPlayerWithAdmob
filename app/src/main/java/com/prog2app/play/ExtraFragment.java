@@ -1,27 +1,34 @@
 package com.prog2app.play;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ExtraFragment extends Fragment {
-    LinearLayout whatsAppLayout,downloadLayout,themeLayout,settingLayout,moreAppsLayout,rateUsLayout,aboutUsLayout;
-
+    LinearLayout whatsAppLayout,downloadLayout,settingLayout,moreAppsLayout,rateUsLayout,aboutUsLayout;
+    private Switch sw1;
+    boolean darkMode;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -29,13 +36,40 @@ public class ExtraFragment extends Fragment {
         View view= inflater.inflate(R.layout.fragment_extra, container, false);
         AdView mAdView = view.findViewById(R.id.adView);
         mAdView.loadAd(new AdRequest.Builder().build());
+        sw1 = (Switch) view.findViewById(R.id.switch1);
         whatsAppLayout=(LinearLayout) view.findViewById(R.id.whatsAppLayout);
         downloadLayout=(LinearLayout) view.findViewById(R.id.downloadLayout);
-        themeLayout=(LinearLayout) view.findViewById(R.id.themeLayout);
         settingLayout=(LinearLayout) view.findViewById(R.id.settingLayout);
         moreAppsLayout=(LinearLayout) view.findViewById(R.id.moreAppsLayout);
         rateUsLayout=(LinearLayout) view.findViewById(R.id.rateUsLayout);
         aboutUsLayout=(LinearLayout) view.findViewById(R.id.aboutUsLayout);
+        SharedPreferences darkModeSP = this.getActivity().getSharedPreferences("Log", MODE_PRIVATE);
+        darkMode = darkModeSP.getBoolean("AppDarkMode", false);
+        if(darkMode){
+            sw1.setChecked(true);
+        }else {
+            sw1.setChecked(false);
+        }
+        sw1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences.Editor darkModeE = getActivity().getSharedPreferences("Log", MODE_PRIVATE).edit();
+                if (sw1.isChecked()) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    darkModeE.putBoolean("AppDarkMode", true);
+                    darkModeE.commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,new ExtraFragment()).commit();
+                }
+                else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    darkModeE.putBoolean("AppDarkMode", false);
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout,new ExtraFragment()).commit();
+                    darkModeE.commit();
+                }
+            }
+        });
 
         whatsAppLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,12 +81,6 @@ public class ExtraFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(),DownloadVideos.class));
-            }
-        });
-        themeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(),"Coming Soon",Toast.LENGTH_LONG).show();
             }
         });
         settingLayout.setOnClickListener(new View.OnClickListener() {

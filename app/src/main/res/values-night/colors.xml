@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#121212</color>
+    <color name="colorPrimaryDark">#000</color>
+    <color name="colorAccent">#FFF</color>
+    <color name="colorNavbar">#202020</color>
+    <color name="colorBackground">#292929</color>
+    <color name="textColor">#fff</color>
+    <color name="progress_transparent">#6377a6</color>
+    <color name="colorRipple">#f0f0f0</color>
+    <color name="colorGreen">#25D366</color>
+    <color name="colorTheme">#ff0c0b</color>
+</resources>

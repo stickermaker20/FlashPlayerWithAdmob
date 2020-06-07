@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:background="@color/colorBackground"
     android:layout_height="match_parent"
     tools:context=".WhatsappVideoList">
     <!-- our tablayout to display tabs  -->
@@ -12,14 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        app:tabTextColor="#000"
+        app:tabTextColor="@color/textColor"
         android:minHeight="?attr/actionBarSize"
-        android:theme="@style/Theme.MaterialComponents"/>
+        android:theme="@style/AppTheme"/>
 
     <!-- View pager to swipe views -->
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/pager"
-        android:background="#fff"
         android:layout_width="match_parent"
         android:layout_height="fill_parent">
     </androidx.viewpager.widget.ViewPager>

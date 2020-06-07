@@ -3,6 +3,9 @@
     <color name="colorPrimary">#e0e0e0</color>
     <color name="colorPrimaryDark">#bdbdbd</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="colorNavbar">#fafafa</color>
+    <color name="colorBackground">#fff</color>
+    <color name="textColor">#212121</color>
     <color name="progress_transparent">#6377a6</color>
     <color name="colorRipple">#f0f0f0</color>
     <color name="colorGreen">#25D366</color>

@@ -51,7 +51,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-2758711540829766~2235587113" />
+            android:value="ca-app-pub-8851242884136138~1770881785" />
 
         <activity
             android:name=".ViewVideo"

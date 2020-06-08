@@ -39,23 +39,13 @@ public class DailyMotionDownloader {
     }
 
     private String createDirectory() {
-        File folder = new File(Environment.getExternalStorageDirectory() +
-                                       File.separator + "My Video Downloader");
+        File folder = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)));
 
-        File subFolder = null;
-        boolean success = true;
         if (!folder.exists()) {
-            success = folder.mkdirs();
+            folder.mkdirs();
         }
-        else {
-            boolean success1 = true;
-            subFolder = new File(folder.getPath()+File.separator+"Dailymotion Videos");
-            if(!subFolder.exists())
-            {
-                success1 = subFolder.mkdirs();
-            }
-        }
-        return subFolder.getPath();
+
+        return folder.getPath();
     }
 
     private String getVideoId(String link) {

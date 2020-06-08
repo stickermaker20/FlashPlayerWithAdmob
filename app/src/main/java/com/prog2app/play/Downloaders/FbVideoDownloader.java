@@ -38,24 +38,13 @@ public class FbVideoDownloader implements VideoDownloader {
 
     @Override
     public String createDirectory() {
-        File folder = new File(Environment.getExternalStorageDirectory() +
-                                       File.separator + "Play");
+        File folder = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)));
 
-        File subFolder = null;
-        boolean success = true;
         if (!folder.exists()) {
-            success = folder.mkdirs();
+            folder.mkdirs();
         }
-        else {
-            boolean success1 = true;
-            subFolder = new File(folder.getPath()+File.separator+"Facebook Videos");
-            if(!subFolder.exists())
-            {
-                success1 = subFolder.mkdirs();
-            }
-        }
-        assert subFolder != null;
-        return subFolder.getPath();
+
+        return folder.getPath();
     }
 
     @Override
@@ -144,29 +133,36 @@ public class FbVideoDownloader implements VideoDownloader {
                     assert manager != null;
                     DownLoadID = manager.enqueue(request);
                 } catch (Exception e) {
-                    Looper.prepare();
-                    Toast.makeText(context, "Video Can't be downloaded! Try Again", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
+                    if(Looper.myLooper()==null){
+                        Looper.prepare();
+                        Looper.loop();
+                        Toast.makeText(context, "Video Can't be downloaded! Try Again", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 }
 
             }
             else {
-                try {
+                if(Looper.myLooper()==null){
                     Looper.prepare();
                     Looper.loop();
-                }catch (Exception e){
-                }
-                Toast.makeText(context, "Wrong Video URL or Check Internet Connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Video Can't be downloaded! Try Again", Toast.LENGTH_SHORT).show();
 
+                }
             }
         }
 
         @Override
         protected void onCancelled() {
             super.onCancelled();
-            Looper.prepare();
-            Toast.makeText(context, "Video Can't be downloaded! Try Again", Toast.LENGTH_SHORT).show();
-            Looper.loop();
+            if(Looper.myLooper()==null){
+                Looper.prepare();
+                Looper.loop();
+                Toast.makeText(context, "Video Can't be downloaded! Try Again", Toast.LENGTH_SHORT).show();
+
+            }
+
         }
     }
 

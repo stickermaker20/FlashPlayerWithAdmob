@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
@@ -155,8 +156,10 @@ public class DailyMotionDownloader {
             FinalURL = o;
             try {
                 String path = createDirectory();
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy_MM_dd HH:mm");
-                File newFile = new File(path, simpleDateFormat.format(new Date()) + "video.mp4");
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                String VideoTitle = "vimeo"+df.format(c.getTime());
+                File newFile = new File(path, VideoTitle);
                 DownloadManager.Request request = new DownloadManager.Request(Uri.parse(FinalURL));
                 request.allowScanningByMediaScanner();
                 request.setDescription("Video Downloading")

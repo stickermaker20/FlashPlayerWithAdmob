@@ -55,9 +55,9 @@ public class GetVideoUrlActivity extends AppCompatActivity {
         mAdView.loadAd(new AdRequest.Builder().build());
         final String downloader=getIntent().getStringExtra("Downloader");
         pointsText.setText("We can help you to download "+downloader+" video follow these steps :");
-        pointOne.setText("1. Open your "+downloader+" app and copy wanted video's link or path.");
+        pointOne.setText("1. Open your "+downloader+" app, open and watch wanted video for few seconds then copy video's link or path.");
         pointTwo.setText("2. Come back here, paste the video path or link in the below box and click 'DOWNLOAD VIDEO' button.");
-        noteText.setText("Your video will automatically download in background.");
+        noteText.setText("If video is not downloading watch it for few seconds then copy link.\n\nYour video will automatically download in background. Please wait after clicking 'DOWNLOAD BUTTON");
         if(downloader.equals("Dailymotion")){
             radioGroupLayout.setVisibility(View.VISIBLE);
         }

@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 
@@ -187,6 +189,9 @@ public class  TopBuzzDownloader {
             if(FinalURL != null || FinalURL != "No URL") {
                 try{
                 String path = createDirectory();
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                    VideoTitle = "topbuzz"+df.format(c.getTime());
                 File newFile = new File(path, VideoTitle);
                 DownloadManager.Request request = new DownloadManager.Request(Uri.parse(FinalURL));
                 request.allowScanningByMediaScanner();

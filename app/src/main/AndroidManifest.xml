@@ -34,7 +34,8 @@
             android:name=".WhatsappVideoList"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity android:name=".AudioVideoList" />
-        <activity android:name=".AudioVideoFolders">
+        <activity android:name=".AudioVideoFolders"
+            android:launchMode = "singleTask">
 
         </activity>
 

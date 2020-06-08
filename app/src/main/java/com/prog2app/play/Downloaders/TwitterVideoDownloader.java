@@ -17,6 +17,8 @@ import com.prog2app.play.Interfaces.VideoDownloader;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
@@ -79,13 +81,9 @@ public class TwitterVideoDownloader implements VideoDownloader {
                             if(URLUtil.isValidUrl(URL))
                             {
                                 String path = createDirectory();
-                                if(VideoTitle == null || VideoTitle.equals(""))
-                                {
-                                    VideoTitle = "TwitterVideo" + new Date().toString()+".mp4";
-                                }
-                                else {
-                                    VideoTitle = VideoTitle + ".mp4";
-                                }
+                                Calendar c = Calendar.getInstance();
+                                SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                                VideoTitle = "twitter"+df.format(c.getTime());
                                 File newFile = new File(path, VideoTitle);
                                 try {
                                     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(URL));

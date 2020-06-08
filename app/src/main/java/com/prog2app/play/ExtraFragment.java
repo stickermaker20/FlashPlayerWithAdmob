@@ -110,7 +110,7 @@ public class ExtraFragment extends Fragment {
         aboutUsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(),WebViewActivity.class));
+                startActivity(new Intent(getActivity(),AboutUs.class));
             }
         });
 

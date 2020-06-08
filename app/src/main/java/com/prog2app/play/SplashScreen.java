@@ -19,6 +19,7 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         SharedPreferences darkModeSP = getSharedPreferences("Log", MODE_PRIVATE);
         darkMode = darkModeSP.getBoolean("AppDarkMode", false);
         if (darkMode) {
@@ -30,17 +31,20 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         logo=(ImageView)findViewById(R.id.logo);
 
+
+
+
+        Animation myanim = AnimationUtils.loadAnimation(this,R.anim.mysplashanimaation);
+        logo.startAnimation(myanim);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+
                 Intent i = new Intent(SplashScreen.this,AudioVideoFolders.class);
                 startActivity(i);
                 finish();
             }
         },2000);
-
-        Animation myanim = AnimationUtils.loadAnimation(this,R.anim.mysplashanimaation);
-        logo.startAnimation(myanim);
     }
 
 }

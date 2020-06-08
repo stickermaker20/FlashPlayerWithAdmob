@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
@@ -117,13 +119,9 @@ public class TiktokVideoDownloader implements VideoDownloader {
             if(URLUtil.isValidUrl(s))
             {
                 String path = createDirectory();
-                if(VideoTitle == null || VideoTitle.equals(""))
-                {
-                    VideoTitle = "TiktokVideo" + new Date().toString()+".mp4";
-                }
-                else {
-                    VideoTitle = VideoTitle + ".mp4";
-                }
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                VideoTitle = "tiktok"+df.format(c.getTime());
                 File newFile = new File(path, VideoTitle);
                 try {
                     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(s));

@@ -19,6 +19,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
@@ -113,13 +115,9 @@ public class InstagramVideoDownloader implements VideoDownloader {
             super.onPostExecute(s);
             if(!s.contains("No URL")) {
                 String path = createDirectory();
-                if(VideoTitle == null || VideoTitle.equals(""))
-                {
-                    VideoTitle = "InstaVideo" + new Date().toString()+".mp4";
-                }
-                else {
-                    VideoTitle = VideoTitle + ".mp4";
-                }
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+                VideoTitle = "instagram"+df.format(c.getTime());
                 File newFile = new File(path, VideoTitle);
                 try {
                     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(s));
@@ -149,9 +147,10 @@ public class InstagramVideoDownloader implements VideoDownloader {
             else {
                 if (Looper.myLooper()==null)
                 Looper.prepare();
-                Toast.makeText(context, "Wrong Video URL or Private Video Can't be downloaded", Toast.LENGTH_SHORT).show();
                 Looper.loop();
             }
+            Toast.makeText(context, "Wrong Video URL or Private Video Can't be downloaded", Toast.LENGTH_SHORT).show();
+
         }
     }
     private static int ordinalIndexOf(String str, String substr, int n) {

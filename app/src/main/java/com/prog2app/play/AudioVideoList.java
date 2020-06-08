@@ -154,10 +154,10 @@ public class AudioVideoList extends AppCompatActivity {
         nativeAd();
     }
     private  void nativeAd(){
-        MobileAds.initialize(this, "ca-app-pub-2758711540829766~2235587113");
+        MobileAds.initialize(this, "ca-app-pub-8851242884136138~1770881785");
         //native test ad id = ca-app-pub-3940256099942544/2247696110
-        //native ad id=  ca-app-pub-2758711540829766/2923705024
-        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-3940256099942544/2247696110")
+        //native ad id=  ca-app-pub-8851242884136138/9074656739
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-8851242884136138/9074656739")
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {

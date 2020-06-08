@@ -90,7 +90,7 @@
             android:text="Select Video Quality"
             android:textStyle="bold"
             android:textSize="19dp"
-            android:textColor="#000"></TextView>
+            android:textColor="@color/textColor"></TextView>
         <RadioGroup
             android:id="@+id/radioGroup"
             android:layout_width="wrap_content"

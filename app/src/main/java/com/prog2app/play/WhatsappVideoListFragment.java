@@ -99,10 +99,10 @@ public class WhatsappVideoListFragment extends Fragment {
         nativeAd();
     }
     private  void nativeAd(){
-        MobileAds.initialize(getActivity(), "ca-app-pub-8851242884136138~1770881785");
+        MobileAds.initialize(getActivity(), "ca-app-pub-9194328510903334~3506381695");
         //native test ad id = ca-app-pub-3940256099942544/2247696110
-        //native ad id=  ca-app-pub-8851242884136138/9074656739
-        AdLoader adLoader = new AdLoader.Builder(getActivity(), "ca-app-pub-8851242884136138/9074656739")
+        //native ad id=  ca-app-pub-9194328510903334/1536207361
+        AdLoader adLoader = new AdLoader.Builder(getActivity(), "ca-app-pub-9194328510903334/1536207361")
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {

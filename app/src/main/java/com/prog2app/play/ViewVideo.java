@@ -892,15 +892,15 @@ public class ViewVideo extends AppCompatActivity{
     }
     private void interstitialAd(){
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-8851242884136138/4616251562");
+        mInterstitialAd.setAdUnitId("ca-app-pub-9194328510903334/8430231855");
         //interstitial test ad id = ca-app-pub-3940256099942544/1033173712
-        //interstitial ad id= ca-app-pub-8851242884136138/4616251562
+        //interstitial ad id= ca-app-pub-9194328510903334/8430231855
     }
     private  void nativeAd(){
-        MobileAds.initialize(this, "ca-app-pub-8851242884136138~1770881785");
+        MobileAds.initialize(this, "ca-app-pub-9194328510903334~3506381695");
         //native test ad id = ca-app-pub-3940256099942544/2247696110
-        //native ad id=  ca-app-pub-8851242884136138/9074656739
-        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-8851242884136138/9074656739")
+        //native ad id=  ca-app-pub-9194328510903334/1536207361
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-9194328510903334/1536207361")
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {

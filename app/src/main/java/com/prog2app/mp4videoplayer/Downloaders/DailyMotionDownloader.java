@@ -1,4 +1,4 @@
-package com.prog2app.play.Downloaders;
+package com.prog2app.mp4videoplayer.Downloaders;
 
 import android.app.DownloadManager;
 import android.content.Context;
@@ -16,7 +16,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 

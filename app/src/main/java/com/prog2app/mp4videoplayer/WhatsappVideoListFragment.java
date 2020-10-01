@@ -1,4 +1,4 @@
-package com.prog2app.play;
+package com.prog2app.mp4videoplayer;
 
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
@@ -12,11 +12,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.ArrayMap;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
 import com.google.android.gms.ads.AdListener;
@@ -99,10 +97,10 @@ public class WhatsappVideoListFragment extends Fragment {
         nativeAd();
     }
     private  void nativeAd(){
-        MobileAds.initialize(getActivity(), "ca-app-pub-9194328510903334~3506381695");
+        MobileAds.initialize(getActivity(), "ca-app-pub-8851242884136138~6085108229");
         //native test ad id = ca-app-pub-3940256099942544/2247696110
         //native ad id=  ca-app-pub-9194328510903334/1536207361
-        AdLoader adLoader = new AdLoader.Builder(getActivity(), "ca-app-pub-9194328510903334/1536207361")
+        AdLoader adLoader = new AdLoader.Builder(getActivity(), "ca-app-pub-8851242884136138/7718604152")
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {

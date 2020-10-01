@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.prog2app.play">
+    package="com.prog2app.mp4videoplayer">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -15,7 +15,7 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashScreen"
+        <activity android:name="com.prog2app.mp4videoplayer.SplashScreen"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,25 +23,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GetVideoUrlActivity" />
-        <activity android:name=".WebViewActivity" />
-        <activity android:name=".AboutUs" />
-        <activity android:name=".DownloadVideos" />
+        <activity android:name="com.prog2app.mp4videoplayer.GetVideoUrlActivity" />
+        <activity android:name="com.prog2app.mp4videoplayer.WebViewActivity" />
+        <activity android:name="com.prog2app.mp4videoplayer.AboutUs" />
+        <activity android:name="com.prog2app.mp4videoplayer.DownloadVideos" />
 
-        <service android:name=".AudioService" />
+        <service android:name="com.prog2app.mp4videoplayer.AudioService" />
 
         <activity
-            android:name=".WhatsappVideoList"
+            android:name="com.prog2app.mp4videoplayer.WhatsappVideoList"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-        <activity android:name=".AudioVideoList" />
-        <activity android:name=".AudioVideoFolders"
+        <activity android:name="com.prog2app.mp4videoplayer.AudioVideoList" />
+        <activity android:name="com.prog2app.mp4videoplayer.AudioVideoFolders"
             android:launchMode = "singleTask">
 
         </activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.prog2app.play"
+            android:authorities="com.prog2app.mp4videoplayer"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -51,10 +51,10 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-9194328510903334~3506381695" />
+            android:value="ca-app-pub-8851242884136138~6085108229" />
 
         <activity
-            android:name=".ViewVideo"
+            android:name="com.prog2app.mp4videoplayer.ViewVideo"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTask"
             android:resizeableActivity="true"

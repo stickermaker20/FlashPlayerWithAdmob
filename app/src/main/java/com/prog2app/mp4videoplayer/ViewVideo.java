@@ -1,4 +1,4 @@
-package com.prog2app.play;
+package com.prog2app.mp4videoplayer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -128,7 +128,7 @@ public class ViewVideo extends AppCompatActivity{
             }
 //            if(videoCurrentTime.equals(videoTotalTime)){
 ////                if(!clickPlayPause) {
-//                    play.setVisibility(View.VISIBLE);
+//                    mp4videoplayer.setVisibility(View.VISIBLE);
 //                    pause.setVisibility(View.GONE);
 //                }
 //            }
@@ -892,15 +892,15 @@ public class ViewVideo extends AppCompatActivity{
     }
     private void interstitialAd(){
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-9194328510903334/8430231855");
+        mInterstitialAd.setAdUnitId("ca-app-pub-8851242884136138/5771275273");
         //interstitial test ad id = ca-app-pub-3940256099942544/1033173712
         //interstitial ad id= ca-app-pub-9194328510903334/8430231855
     }
     private  void nativeAd(){
-        MobileAds.initialize(this, "ca-app-pub-9194328510903334~3506381695");
+        MobileAds.initialize(this, "ca-app-pub-8851242884136138~6085108229");
         //native test ad id = ca-app-pub-3940256099942544/2247696110
         //native ad id=  ca-app-pub-9194328510903334/1536207361
-        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-9194328510903334/1536207361")
+        AdLoader adLoader = new AdLoader.Builder(this, "ca-app-pub-8851242884136138/7718604152")
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {

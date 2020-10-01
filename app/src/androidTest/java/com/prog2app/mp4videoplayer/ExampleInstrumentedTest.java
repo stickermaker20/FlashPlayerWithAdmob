@@ -1,4 +1,4 @@
-package com.prog2app.play;
+package com.prog2app.mp4videoplayer;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.prog2app.play", appContext.getPackageName());
+        assertEquals("com.prog2app.mp4videoplayer", appContext.getPackageName());
     }
 }

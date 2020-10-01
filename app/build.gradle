@@ -4,11 +4,11 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "com.prog2app.play"
+        applicationId "com.prog2app.mp4videoplayer"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 9
-        versionName "1.8"
+        versionCode 23
+        versionName "3.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

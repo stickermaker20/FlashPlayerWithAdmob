@@ -1,4 +1,4 @@
-package com.prog2app.play.Downloaders;
+package com.prog2app.mp4videoplayer.Downloaders;
 
 import android.app.DownloadManager;
 import android.content.Context;
@@ -12,14 +12,13 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.prog2app.play.Interfaces.VideoDownloader;
+import com.prog2app.mp4videoplayer.Interfaces.VideoDownloader;
 
 import org.json.JSONObject;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 

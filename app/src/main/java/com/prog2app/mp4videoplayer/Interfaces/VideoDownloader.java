@@ -1,4 +1,4 @@
-package com.prog2app.play.Interfaces;
+package com.prog2app.mp4videoplayer.Interfaces;
 
 public interface VideoDownloader {
 

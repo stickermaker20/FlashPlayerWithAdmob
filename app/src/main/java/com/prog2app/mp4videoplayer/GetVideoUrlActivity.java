@@ -1,4 +1,4 @@
-package com.prog2app.play;
+package com.prog2app.mp4videoplayer;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -21,13 +21,13 @@ import android.widget.TextView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.snackbar.Snackbar;
-import com.prog2app.play.Downloaders.DailyMotionDownloader;
-import com.prog2app.play.Downloaders.FbVideoDownloader;
-import com.prog2app.play.Downloaders.InstagramVideoDownloader;
-import com.prog2app.play.Downloaders.TiktokVideoDownloader;
-import com.prog2app.play.Downloaders.TopBuzzDownloader;
-import com.prog2app.play.Downloaders.TwitterVideoDownloader;
-import com.prog2app.play.Downloaders.VimeoVideoDownloader;
+import com.prog2app.mp4videoplayer.Downloaders.DailyMotionDownloader;
+import com.prog2app.mp4videoplayer.Downloaders.FbVideoDownloader;
+import com.prog2app.mp4videoplayer.Downloaders.InstagramVideoDownloader;
+import com.prog2app.mp4videoplayer.Downloaders.TiktokVideoDownloader;
+import com.prog2app.mp4videoplayer.Downloaders.TopBuzzDownloader;
+import com.prog2app.mp4videoplayer.Downloaders.TwitterVideoDownloader;
+import com.prog2app.mp4videoplayer.Downloaders.VimeoVideoDownloader;
 
 public class GetVideoUrlActivity extends AppCompatActivity {
     EditText editText;

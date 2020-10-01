@@ -1,4 +1,4 @@
-package com.prog2app.play;
+package com.prog2app.mp4videoplayer;
 
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -175,10 +175,10 @@ public class AudioVideoFoldersFragment extends Fragment {
         }}
 
     private  void nativeAd(final ArrayList<String> singleFolderName){
-        MobileAds.initialize(getActivity(), "ca-app-pub-9194328510903334~3506381695");
+        MobileAds.initialize(getActivity(), "ca-app-pub-8851242884136138~6085108229");
         //native test ad id = ca-app-pub-3940256099942544/2247696110
         //native ad id=  ca-app-pub-9194328510903334/1536207361
-        AdLoader adLoader = new AdLoader.Builder(getActivity(), "ca-app-pub-9194328510903334/1536207361")
+        AdLoader adLoader = new AdLoader.Builder(getActivity(), "ca-app-pub-8851242884136138/7718604152")
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {

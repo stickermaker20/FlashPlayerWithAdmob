@@ -1,4 +1,4 @@
-package com.prog2app.play.Downloaders;
+package com.prog2app.mp4videoplayer.Downloaders;
 
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
@@ -10,7 +10,7 @@ import android.os.Looper;
 import android.webkit.URLUtil;
 import android.widget.Toast;
 
-import com.prog2app.play.Interfaces.VideoDownloader;
+import com.prog2app.mp4videoplayer.Interfaces.VideoDownloader;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,17 +21,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 
-public class TiktokVideoDownloader implements VideoDownloader {
+public class VimeoVideoDownloader implements VideoDownloader {
 
     private Context context;
     private String VideoURL;
     private String VideoTitle;
 
-    public TiktokVideoDownloader(Context context, String videoURL) {
+    public VimeoVideoDownloader(Context context, String videoURL) {
         this.context = context;
         VideoURL = videoURL;
     }
@@ -49,10 +48,6 @@ public class TiktokVideoDownloader implements VideoDownloader {
 
     @Override
     public String getVideoId(String link) {
-        if(!link.contains("https"))
-        {
-            link = link.replace("http","https");
-        }
         return link;
     }
 
@@ -62,7 +57,7 @@ public class TiktokVideoDownloader implements VideoDownloader {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class Data extends AsyncTask<String, String,String>{
+    private class Data extends AsyncTask<String, String,String> {
 
         @Override
         protected String doInBackground(String... strings) {
@@ -78,36 +73,75 @@ public class TiktokVideoDownloader implements VideoDownloader {
 
                 reader = new BufferedReader(new InputStreamReader(stream));
 
-                StringBuilder buffer =new StringBuilder();
+                String buffer = "No URL";
                 String Line;
                 while ((Line = reader.readLine()) != null)
                 {
-                    //Log.e("Hello", Line);
-                    if(Line.contains("videoData"))
+                    if(Line.contains("og:title"))
                     {
-                        Line = Line.substring(Line.indexOf("videoData"));
-                        //Log.e("Hello",Line);
-                        Line = Line.substring(Line.indexOf("urls"));
-                        //Log.e("Hello",Line);
-                        VideoTitle = Line.substring(Line.indexOf("text"));
-                        if(VideoTitle.contains("#")) {
-                            VideoTitle = VideoTitle.substring(ordinalIndexOf(VideoTitle, "\"", 1) + 1, ordinalIndexOf(VideoTitle, "#", 0));
-                        }
-                        else {
-                            VideoTitle = VideoTitle.substring(ordinalIndexOf(VideoTitle, "\"", 1) + 1, ordinalIndexOf(VideoTitle, "\"", 2));
-                        }
-                        //Log.e("HelloTitle",VideoTitle);
+                        VideoTitle = Line.substring(Line.indexOf("og:title"));
+                        VideoTitle = VideoTitle.substring(ordinalIndexOf(VideoTitle,"\"",1)+1,ordinalIndexOf(VideoTitle,"\"",2));
+                    }
+                    if(Line.contains("og:video:url"))
+                    {
+                        Line = Line.substring(Line.indexOf("og:video:url"));
                         Line = Line.substring(ordinalIndexOf(Line,"\"",1)+1,ordinalIndexOf(Line,"\"",2));
-                        //Log.e("HelloURL",Line);
                         if(!Line.contains("https"))
                         {
                             Line = Line.replace("http","https");
                         }
-                        buffer.append(Line);
+                        boolean checkURL = URLUtil.isValidUrl(Line);
+                        if(checkURL)
+                        {
+                            HttpURLConnection connection11;
+                            BufferedReader reader1;
+                            URL url1 = new URL(Line);
+                            try {
+                                connection11 = (HttpURLConnection) url1.openConnection();
+                                connection11.connect();
+
+                                InputStream stream1 = connection11.getInputStream();
+                                reader1 = new BufferedReader(new InputStreamReader(stream1));
+
+                                StringBuilder builder = new StringBuilder();
+                                String str;
+                                while ((str = reader1.readLine()) != null)
+                                {
+                                    builder.append(str);
+                                }
+                                String hello = builder.toString();
+                                int Counter = countOccurences(hello,"video/mp4");
+                                if(Counter>0) {
+                                    for (int i = 0; i < Counter; i++) {
+                                        String FinalURL = hello.substring(ordinalIndexOf(hello,"video/mp4",i));
+                                        FinalURL = FinalURL.substring(FinalURL.indexOf("url")+1);
+                                        FinalURL = FinalURL.substring(FinalURL.indexOf("\"")+1,FinalURL.indexOf("}"));
+                                        if(FinalURL.contains("360p"))
+                                        {
+                                            FinalURL = FinalURL.substring(FinalURL.indexOf("\"")+1,ordinalIndexOf(FinalURL,"\"",1));
+                                            Line = FinalURL;
+                                            break;
+                                        }
+                                        else {
+                                            FinalURL = FinalURL.substring(FinalURL.indexOf("\"")+1,ordinalIndexOf(FinalURL,"\"",1));
+                                            Line = FinalURL;
+                                        }
+                                    }
+                                }
+
+                            } catch (IOException e) {
+                                Line = "Wrong Video URL";
+                            }
+                        }
+                        buffer = Line;
                         break;
                     }
+                    else {
+                        buffer= "Wrong Video URL";
+                    }
+
                 }
-                return buffer.toString();
+                return buffer;
             } catch (IOException e) {
                 return "Invalid Video URL or Check Internet Connection";
             }
@@ -115,13 +149,12 @@ public class TiktokVideoDownloader implements VideoDownloader {
 
         @Override
         protected void onPostExecute(String s) {
-            super.onPostExecute(s);
             if(URLUtil.isValidUrl(s))
             {
                 String path = createDirectory();
                 Calendar c = Calendar.getInstance();
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-                VideoTitle = "tiktok"+df.format(c.getTime());
+                VideoTitle = "vimeo"+df.format(c.getTime());
                 File newFile = new File(path, VideoTitle);
                 try {
                     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(s));
@@ -157,6 +190,22 @@ public class TiktokVideoDownloader implements VideoDownloader {
             pos = str.indexOf(substr, pos + 1);
         } while (n-- > 0 && pos != -1);
         return pos;
+    }
+    private static int countOccurences(String str, String word)
+    {
+        // split the string by spaces in a
+        String a[] = str.split("\"");
+
+        // search for pattern in a
+        int count = 0;
+        for (int i = 0; i < a.length; i++)
+        {
+            // if match found increase count
+            if (word.equals(a[i]))
+                count++;
+        }
+
+        return count;
     }
 
 }
